@@ -34,7 +34,11 @@
                     
 
                             <button type="submit" class="login-btn">S'authentifier</button>
-
+                            <br><br><div class="d-flex justify-content-center" *ngIf="loading">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
                             <p class="mb-0">Pas de compte? <a href="/register">S'inscrire</a></p>
                         </form>
                     </div>

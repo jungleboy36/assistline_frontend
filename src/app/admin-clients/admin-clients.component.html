@@ -1,0 +1,72 @@
+<html lang="zxx">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+ 
+
+    <link rel="icon" type="image/png" src="../../assets/img/favicon.png">
+
+</head>
+
+<body>
+  <app-sidebar-admin></app-sidebar-admin>
+  <div class="main-content d-flex flex-column">
+  <app-navbar-admin></app-navbar-admin>
+
+  
+<br><br>
+<div class="container mt-4">
+    <h2 class="text-center mr-4">Gestion des clients</h2>
+    <div class="d-flex justify-content-center" *ngIf="loading">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <table class="table table-striped mt-4">
+        
+        <thead>
+            <tr>
+               
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Date Inscription</th>
+                <th>Statut du compte</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <!-- Loop through companies and display each company's data -->
+            <tr *ngFor="let client of clients">
+                
+                <td>{{ client.name }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.dateInscription| date: 'dd MMM yyyy'  }}</td>
+                <td><i style="color: red;" class="bx bx-x-circle" *ngIf="!client.enabled" ></i>
+                    <i style="color: green;" class="bx bx-check-circle" *ngIf="client.enabled" ></i>
+                    {{ client.enabled ? 'Actif' : 'Désactivé' }}</td>
+                <div class="form-check form-switch">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id=" client-{{  client.uid }}"
+                        [checked]=" client?.enabled"
+                        (change)=" updateClientStatus( client, $event)"
+                    >
+                    <label class="form-check-label" for=" client-{{  client.uid }}">
+                       
+                    </label>
+                    
+                </div>
+                
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</div>
+</body></html>

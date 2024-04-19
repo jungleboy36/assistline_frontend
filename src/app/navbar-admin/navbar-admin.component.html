@@ -1,0 +1,192 @@
+<html lang="zxx">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    
+    </head>    
+    
+
+    <nav class="navbar top-navbar navbar-expand">
+        <div class="collapse navbar-collapse" id="navbarSupportContent">
+            <div class="responsive-burger-menu d-block d-lg-none">
+                <span class="top-bar"></span>
+                <span class="middle-bar"></span>
+                <span class="bottom-bar"></span>
+            </div>
+            
+            <form class="nav-search-form d-none ml-auto d-md-block">
+                <label><i class='bx bx-search'></i></label>
+                <input type="text" class="form-control" placeholder="Search here...">
+            </form>
+
+            <ul class="navbar-nav right-nav align-items-center">
+             
+
+                <li class="nav-item dropdown language-switch-nav-item">
+                    <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="assets/img/france-flag.jpg" alt="image">
+                        <span>Français <i class='bx bx-chevron-down'></i></span>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        
+                        <br>
+                        <small style="margin-left:30px;"  >Arrive bientot </small>
+                        <a href="#" style="margin-top: 10px;" class="dropdown-item d-flex justify-content-between align-items-center disabled-option">
+                            <span>English</span>
+
+                            <img src="assets/img/us-flag.jpg" alt="flag">
+                        </a>
+                        <a href="#"  class="dropdown-item d-flex justify-content-between align-items-center disabled-option">
+                            <span>German</span>
+
+                            <img src="assets/img/germany-flag.jpg" alt="flag">
+                        </a>
+
+                        
+
+                        <a href="#" class=" disabled-option dropdown-item d-flex justify-content-between align-items-center "  >
+                            <span>Spanish</span>
+
+                            <img src="assets/img/spain-flag.jpg" alt="flag">
+                        </a>
+
+                        <a href="#" class="dropdown-item d-flex justify-content-between align-items-center disabled-option">
+                            <span>Italian</span>
+
+                            <img src="assets/img/italy-flag.jpg" alt="flag">
+                        </a>
+                    </div>
+                </li>
+
+                
+
+                <li class="nav-item notification-box dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="notification-btn">
+                            <i class='bx bx-bell'></i>
+
+                            <span class="badge badge-secondary">5</span>
+                        </div>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <div class="dropdown-header d-flex justify-content-between align-items-center">
+                            <span class="title d-inline-block">6 New Notifications</span>
+                            <span class="mark-all-btn d-inline-block">Mark all as read</span>
+                        </div>
+
+                        <div class="dropdown-body">
+                            <a href="#" class="dropdown-item d-flex align-items-center">
+                                <div class="icon">
+                                    <i class='bx bx-message-rounded-dots'></i>
+                                </div>
+
+                                <div class="content">
+                                    <span class="d-block">Just sent a new message!</span>
+                                    <p class="sub-text mb-0">2 sec ago</p>
+                                </div>
+                            </a>
+
+                            <a href="#" class="dropdown-item d-flex align-items-center">
+                                <div class="icon">
+                                    <i class='bx bx-user'></i>
+                                </div>
+
+                                <div class="content">
+                                    <span class="d-block">New customer registered</span>
+                                    <p class="sub-text mb-0">5 sec ago</p>
+                                </div>
+                            </a>
+
+                            <a href="#" class="dropdown-item d-flex align-items-center">
+                                <div class="icon">
+                                    <i class='bx bx-layer'></i>
+                                </div>
+
+                                <div class="content">
+                                    <span class="d-block">Apps are ready for update</span>
+                                    <p class="sub-text mb-0">3 min ago</p>
+                                </div>
+                            </a>
+
+                            <a href="#" class="dropdown-item d-flex align-items-center">
+                                <div class="icon">
+                                    <i class='bx bx-hourglass'></i>
+                                </div>
+
+                                <div class="content">
+                                    <span class="d-block">Your item is shipped</span>
+                                    <p class="sub-text mb-0">7 min ago</p>
+                                </div>
+                            </a>
+
+                            <a href="#" class="dropdown-item d-flex align-items-center">
+                                <div class="icon">
+                                    <i class='bx bx-comment-dots'></i>
+                                </div>
+
+                                <div class="content">
+                                    <span class="d-block">Steven commented on your post</span>
+                                    <p class="sub-text mb-0">1 sec ago</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="dropdown-footer">
+                            <a href="#" class="dropdown-item">View All</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown profile-nav-item" *ngIf="authService.isLoggedIn$ | async">
+                    <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="menu-profile">
+                            <span class="name">Bounjour! Admin</span>
+                            
+                        </div>
+                    </a>
+                
+                    <div class="dropdown-menu">
+                        <div class="dropdown-header d-flex flex-column align-items-center">
+                           
+                
+                            <div class="info text-center">
+                                <span class="name">Admin</span>
+                                
+                            </div>
+                        </div>
+                
+                        <div class="dropdown-body">
+                            <ul class="profile-nav p-0 pt-3">
+                              
+                
+                               
+                
+                        
+                
+                            </ul>
+                        </div>
+                
+                        <div class="dropdown-footer">
+                            <ul class="profile-nav">
+                                <li class="nav-item">
+                                    <a href="#" (click)="authService.logout()" class="nav-link">
+                                        <i class='bx bx-log-out'></i> <span>Logout</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+
+
+        </html>

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +16,12 @@ export class AuthService {
   public isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   // Property to store the user's information
-  public userInfo: any = null;
+  public infoUser : any = null;
 
-  constructor(private http: HttpClient) {
-    // Load user info from local storage when service is instantiated
+  public token: string | null = null;
+
+  constructor(private http: HttpClient, private router: Router) {
+    // Load user info from local storage when the service is instantiated
     this.loadUserInfo();
   }
 
@@ -31,9 +35,15 @@ export class AuthService {
     return this.http.post<any>(this.apiUrl + 'login/', { email, password }).pipe(
       tap(response => {
         if (response.message === 'Login successful') {
-          this.userInfo = response.user;
+          // Store the token in local storage
+          this.token = response.token;
+          localStorage.setItem('token', this.token!);
+
+          // Update the logged-in state
           this.isLoggedInSubject.next(true);
-          this.saveUserInfo();
+
+          // Load user info if available
+        
         }
       })
     );
@@ -41,24 +51,21 @@ export class AuthService {
 
   // Logout a user and clear their information
   logout(): void {
-    this.userInfo = null;
+    this.token = null;
     this.isLoggedInSubject.next(false);
-    localStorage.removeItem('userInfo');
-    //localStorage.removeItem('uid');
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
   // Save user information to local storage
-  private saveUserInfo(): void {
-    if (this.userInfo) {
-      localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
-    }
-  }
+ 
 
   // Load user information from local storage
   private loadUserInfo(): void {
-    const storedUserInfo = localStorage.getItem('userInfo');
-    if (storedUserInfo) {
-      this.userInfo = JSON.parse(storedUserInfo);
+    const storedToken = localStorage.getItem('token');
+
+    if (storedToken) {
+      this.token = storedToken;
       this.isLoggedInSubject.next(true);
     } else {
       this.isLoggedInSubject.next(false);
@@ -66,34 +73,45 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    // Retrieve the user info object from local storage
-    const userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
-      // Parse the user info object and check for the existence of the `uid`
-      const user = JSON.parse(userInfo);
-      return !!user.uid; // Returns true if `uid` exists, false otherwise
-    }
-    return false;
+    // Check if there is a token in local storage
+    const storedToken = localStorage.getItem('token');
+    return storedToken !== null;
   }
 
 
-  getUserId(): string | null {
-    const userData = localStorage.getItem('userInfo');
-    if (userData) {
-        const user = JSON.parse(userData);
-        return user.uid; // Assuming 'uid' is stored in the user object
-    }
-    return null; // Return null if no user data is found
-  }
 
-  updateUsername(newUsername: string): void {
+/*   updateUsername(newUsername: string): void {
     if (this.userInfo) {
         // Update the username in the userInfo object
         this.userInfo.display_name = newUsername;
         
         // Save the updated userInfo back to local storage
-        this.saveUserInfo();
+       
     }
-}
-}
+  } */
 
+  private getInfoFromToken(token: string | null): string[] | null {
+    if (!token) {
+        return null;
+    }
+
+    try {
+        // Decode the token using jwt-decode and extract the role
+        const decodedToken: any = jwtDecode(token);
+        this.infoUser.id = decodedToken.uid;
+        this.infoUser.display_name = decodedToken.display_name;
+        this.infoUser.email = decodedToken.email;
+        return this.infoUser;
+    } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+    }
+  }
+
+
+
+
+getToken() : string | null {
+  return localStorage.getItem('token');
+}
+}

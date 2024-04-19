@@ -8,17 +8,32 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './services/AuthGuard';
 import { ProfileComponent } from './profile/profile.component';
+import { AdminCompaniesComponent } from './admin-companies/admin-companies.component';
+import { ForbiddenComponent } from './forbidden/forbidden.component';
+import { AdminClientsComponent } from './admin-clients/admin-clients.component';
 const routes: Routes = [
 
-  {path:'offers', component: OfferListComponent , canActivate: [AuthGuard]},
+{path:'offers',
+children :[
+  {path:'', component: OfferListComponent , canActivate: [AuthGuard], data: { expectedRole: 'client' }},
+]
+},
+
   {path:'demandes', component: DemandeListComponent , canActivate: [AuthGuard]},
   {path:'edit-demande/:id',component:EditDemandeComponent, canActivate: [AuthGuard]},
   {path:'edit-offer/:id',component:EditOfferComponent, canActivate: [AuthGuard]},
   {path:'profile', component:ProfileComponent, canActivate:[AuthGuard] },
   {path:'register',component:RegisterComponent},
+  {path:'forbidden',component:ForbiddenComponent},
   {path:'login',component:LoginComponent},
+  {
+    path:'admin',
+    children :[
+  {path:'companies',component:AdminCompaniesComponent , canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
+  {path:'clients',component:AdminClientsComponent , canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
 
-  { path: '**', redirectTo: '/offers', pathMatch: 'full' } // Redirect to '/offers' for unmatched routes
+]},
+  { path: '**', redirectTo: '/login', pathMatch: 'full' } // Redirect to '/offers' for unmatched routes
 
 ];
 

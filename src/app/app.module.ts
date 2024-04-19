@@ -16,6 +16,11 @@ import { EditDemandeComponent } from './edit-demande/edit-demande.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AdminCompaniesComponent } from './admin-companies/admin-companies.component';
+import { SidebarAdminComponent } from './sidebar-admin/sidebar-admin.component';
+import { NavbarAdminComponent } from './navbar-admin/navbar-admin.component';
+import { ForbiddenComponent } from './forbidden/forbidden.component';
+import { AdminClientsComponent } from './admin-clients/admin-clients.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +35,11 @@ import { ProfileComponent } from './profile/profile.component';
     RegisterComponent,
     LoginComponent,
     ProfileComponent,
+    AdminCompaniesComponent,
+    SidebarAdminComponent,
+    NavbarAdminComponent,
+    ForbiddenComponent,
+    AdminClientsComponent,
     
     
   ],

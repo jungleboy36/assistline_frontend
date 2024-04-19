@@ -11,7 +11,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-
+  loading: boolean = false;
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -20,6 +20,7 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
+    this.loading = true;
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe(
@@ -31,12 +32,16 @@ export class LoginComponent {
             confirmButtonText: 'OK'
           });
           // Navigate to the desired page after successful login
-          this.router.navigate(['/offers']);
+          if(response['role'] === 'admin'){
+          this.router.navigate(['/admin/companies']);}
+          else{
+            this.router.navigate(['/offers'])}
         },
         error => {
           // Handle failed login
           const errorMessage = error?.error?.message;
-          if (errorMessage === 'Account disabled') {
+          if (error.status === 403 && error.error && error.error.error === 'Account disabled') {
+            this.loading = false; 
               Swal.fire({
                   icon: 'error',
                   title: 'Connexion échouée',
@@ -44,6 +49,7 @@ export class LoginComponent {
                   confirmButtonText: 'OK'
               });
           } else {
+            this.loading = false; 
               Swal.fire({
                   icon: 'error',
                   title: 'Connexion échouée',

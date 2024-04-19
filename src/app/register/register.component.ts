@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class RegisterComponent {
   formData: any = {};
+  loading: boolean = false;
 
   constructor(private registerService: AuthService, private router: Router) { }
 
@@ -33,6 +34,7 @@ export class RegisterComponent {
 }
 
   submitForm(): void {
+    this.loading = true;
     if (!this.formData.name || !this.formData.email || !this.formData.password || !this.formData.password2 || !this.formData.role) {
       Swal.fire({
         icon: 'error',
@@ -44,6 +46,8 @@ export class RegisterComponent {
     }
 
     if (this.formData.role === 'company' && !this.formData.file) {
+      this.loading = false;
+
       Swal.fire({
         icon: 'error',
         title: 'Fichier manquant',
@@ -54,6 +58,8 @@ export class RegisterComponent {
     }
 
     if (this.formData.password !== this.formData.password2) {
+      this.loading = false;
+
       Swal.fire({
         icon: 'error',
         title: 'Mot de passe incorrect',
@@ -77,7 +83,10 @@ export class RegisterComponent {
 
     // Call the register service
     this.registerService.register(formData).subscribe(
+      
       response => {
+        this.loading = true;
+
         Swal.fire({
           icon: 'success',
           title: 'Inscription réussie !',
@@ -87,6 +96,8 @@ export class RegisterComponent {
         this.router.navigate(['offres']);
       },
       error => {
+        this.loading = false;
+
         Swal.fire({
           icon: 'error',
           title: 'Échec de l\'inscription',
