@@ -13,12 +13,26 @@
         <br>
         <h2>Demandes</h2>
         <!-- Add demande modal -->
-        <button type="button" class="btn btn-primary" style="width: 165px;" data-toggle="modal" *ngIf="role === 'client'" data-target="#basicModal">
-            + Ajouter une demande
-        </button>
-        <div style="width:200px; margin-left:1000px">
+        <div *ngIf="role === 'company'">
+            <br>
+            <button type="button" (click)="refresh()" class="btn btn-primary" style="width: 50px;height:30px;margin-bottom:10px">
+                <i class="bx bx-revision"></i>
+             </button><br>
+        <div style="width:200px; margin-left:1000px;margin-top:-45px;">
             <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" >
         </div>
+    </div>
+    <div *ngIf="role === 'client'">
+        <button type="button" (click)="refresh()" class="btn btn-primary" style="width: 50px;height:30px;margin-bottom:10px">
+            <i class="bx bx-revision"></i>
+         </button><br>
+        <button type="button" class="btn btn-primary" style="width: 120px;" data-toggle="modal"  data-target="#basicModal">+ Ajouter
+        </button>
+    
+        <div style="width:200px; margin-left:1000px;margin-top:-33px">
+            <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" >
+        </div>
+    </div>
         <!-- Add Demande Modal -->
         <div class="modal fade" id="basicModal" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -50,7 +64,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Date déménagement</label>
-                                <input type="date" class="form-control"  formControlName="date" [(ngModel)]="newDemande.date" name="date">
+                                <input type="date" class="form-control"  formControlName="date" [(ngModel)]="newDemande.date" [attr.min]="minDate" name="date">
                             </div>
                             <div class="form-group">
                                 <label>Volume(m3)</label>

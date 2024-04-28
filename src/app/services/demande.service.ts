@@ -44,4 +44,16 @@ export class DemandeService {
     console.error('API Error:', error);
     return throwError('An error occurred. Please try again later.');
 }
+
+getMinDate(): string {
+  // Calculate the minimum date (e.g., today's date)
+  const today = new Date();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Adding 1 because getMonth() returns zero-based month
+  const day = today.getDate().toString().padStart(2, '0');
+  const year = today.getFullYear();
+
+  // Format the minimum date string in a way that datetime-local input expects
+  return `${year}-${month}-${day}T00:00`;
+}
+
 }

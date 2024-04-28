@@ -11,9 +11,14 @@ import Swal from 'sweetalert2';
 })
 export class EditOfferComponent {
   currentDate!: any;
-  constructor(private route: ActivatedRoute, public router : Router ,private offerService: OfferService,private datePipe: DatePipe) { }
+  minDate: string;
+  constructor(private route: ActivatedRoute, public router : Router ,private offerService: OfferService,private datePipe: DatePipe) 
+  { 
+    this.minDate = this.offerService.getMinDate();
+  }
   offer! : any ;
   ngOnInit(): void {
+
     this.currentDate = this.datePipe.transform(new Date(),'yyyy-MM-ddTHH:mm');
     console.log("current date : ", this.currentDate);
     const offerId = this.route.snapshot.paramMap.get('id');
@@ -64,4 +69,6 @@ export class EditOfferComponent {
   goBack(): void{
     this.router.navigate(['/offers']);
   }
+
+
 }

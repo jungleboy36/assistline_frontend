@@ -43,6 +43,7 @@ export class OfferListComponent implements OnInit {
   };
   loading: boolean = true;
   public role : string | null = null ;
+  minDate: string;
 
   constructor(
     private offerService: OfferService,
@@ -50,7 +51,10 @@ export class OfferListComponent implements OnInit {
     private formBuilder: FormBuilder,
     public authService : AuthService,
     private datePipe: DatePipe,
-  ) {}
+  ) {
+
+     this.minDate = this.offerService.getMinDate();
+  }
 
   ngOnInit(): void {
     this.loadOffers();

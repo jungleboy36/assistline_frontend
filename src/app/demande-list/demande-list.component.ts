@@ -47,8 +47,11 @@ export class DemandeListComponent implements OnInit {
   demandeForm!: FormGroup ;
   @ViewChild('cancelButton') cancelButton: ElementRef | undefined;
   filteredDemandes: any[] =[];
+  minDate: string;
 
-  constructor(private demandeService : DemandeService, private router : Router,private formBuilder: FormBuilder, private authService : AuthService, private datePipe : DatePipe) { }
+  constructor(private demandeService : DemandeService, private router : Router,private formBuilder: FormBuilder, private authService : AuthService, private datePipe : DatePipe) { 
+    this.minDate = this.demandeService.getMinDate();
+  }
 
   ngOnInit(): void {
     this.role = this.authService.getRole();
@@ -76,11 +79,18 @@ export class DemandeListComponent implements OnInit {
 
 
   loadDemandes() {
+    const cachedDemandes = localStorage.getItem('cachedDemandes');
+    if (cachedDemandes) {
+      this.demandes = JSON.parse(cachedDemandes);
+      this.filteredDemandes = [...this.demandes];
+      this.loading = false;}
+      else{}
     if (this.role == 'company')
     this.demandeService.getDemandes().subscribe(
       (demandes: any[]) => {
         this.demandes = demandes.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
         this.filteredDemandes = [...this.demandes];
+        localStorage.setItem('cachedDemandes', JSON.stringify(this.demandes));
         this.loading = false ;
         this.applyFilter();
 
@@ -189,4 +199,25 @@ export class DemandeListComponent implements OnInit {
       offer.description.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
+
+  refresh() {
+    this.loading = true;
+    this.filteredDemandes = [ ]
+    this.demandeService.getDemandes().subscribe(
+      (demandes: any[]) => {
+        this.demandes = demandes.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
+        this.filteredDemandes = [...this.demandes];
+        localStorage.setItem('cachedDemandes', JSON.stringify(this.demandes));
+        this.loading = false;
+        if (this.filterOption == "mine") {
+          this.applyFilter();
+        }
+      },
+      (error) => {
+        this.errorMessage = 'Error fetching demandes: ' + error.message;
+        this.loading = false;
+      }
+    );
+  }
+
 }

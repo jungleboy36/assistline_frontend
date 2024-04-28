@@ -16,21 +16,24 @@
 
         <br>
         <h2>Offres</h2>
-        <button type="button" (click)="refresh()" class="btn btn-primary" style="width: 50px;height:30px">
+        <button type="button" (click)="refresh()" class="btn btn-primary" style="width: 50px;height:30px;margin-bottom:10px">
            <i class="bx bx-revision"></i>
         </button>
+        
         <!-- Offer modal -->
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" style="width: 165px;" data-toggle="modal" data-target="#basicModal" *ngIf="isCompany()">
-            + Ajouter une offre
+            + Ajouter
         </button>
             
-        <div style="width:200px; margin-left:1000px">
+        <div style="width:200px; margin-left:1000px;margin-top:-90px">
             <select class="form-control inline-block" [(ngModel)]="filterOption" (change)="applyFilter()" style="margin-bottom: 10px;"  *ngIf="isCompany()">
                 <option value="all" selected>Tous les offres</option>
                 <option value="mine">Mes offres</option>
               </select>
-            <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" >
+            <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" *ngIf="isCompany()" >
+            <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" *ngIf="! isCompany()" style="margin-top:40px" >
+
         </div>
         <!-- Modal -->
         <div class="modal fade" id="basicModal" role="dialog" aria-hidden="true">
@@ -55,11 +58,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Departure Date</label>
-                                <input type="datetime-local" class="form-control" [(ngModel)]="newOffer.depart_date" formControlName="depart_date" name="depart_date">
+                                <input type="datetime-local" class="form-control" [(ngModel)]="newOffer.depart_date" formControlName="depart_date" [attr.min]="minDate"  name="depart_date">
                             </div>
                             <div class="form-group">
                                 <label>Arrival Date</label>
-                                <input type="datetime-local" class="form-control" [(ngModel)]="newOffer.arrival_date" formControlName="arrival_date" name="arrival_date">
+                                <input type="datetime-local" class="form-control" [(ngModel)]="newOffer.arrival_date" formControlName="arrival_date" [attr.min]="minDate" name="arrival_date">
                             </div>
                             <div class="form-group">
                                 <label>Itinerary</label>

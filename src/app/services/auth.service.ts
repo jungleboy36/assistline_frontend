@@ -40,29 +40,52 @@ import Swal from 'sweetalert2';
       this.loadingSubject.next(true); // Set loading to true when login process starts
       this.auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          // Login successful
-          console.log('Login successful');
-          const userId = userCredential.user!.uid;
-          // Set the user ID in local storage
-          localStorage.setItem('userId', userId);
-          localStorage.setItem('display_name', userCredential.user?.displayName!);
-          localStorage.setItem('email', userCredential.user?.email!);
-          this.isLoggedInSubject.next(true);
-          userCredential.user?.getIdToken().then(id_token => {
-            localStorage.setItem('id_token', id_token);
-          })
-          this.getRoleByEmail(email).subscribe(data => {
-            console.log('data :', data)
-            this.role = data['role'];
-            console.log('role ! : ', this.role)
-            localStorage.setItem('role', this.role)
-            if (this.role === 'admin') {
-              this.router.navigate(['/admin/clients']);
-            } else if (this.role === 'client') {
-              this.router.navigate(['/offers']);
+          const user = userCredential.user;
+          console.log("user credentials : ", user);
+          // Check if email is verified and account is enabled
+          console.log("user id: ", user!.uid);
+          this.checkUserStatus(user!.uid).subscribe(enabled => {
+            if (user && user.emailVerified && enabled) {
+              // Proceed with normal login flow
+              console.log('Login successful');
+              const userId = user.uid;
+              // Set the user ID in local storage
+              localStorage.setItem('userId', userId);
+              localStorage.setItem('display_name', user.displayName!);
+              localStorage.setItem('email', user.email!);
+              this.isLoggedInSubject.next(true);
+              user.getIdToken().then(id_token => {
+                localStorage.setItem('id_token', id_token);
+              });
+              this.getRoleByEmail(email).subscribe(data => {
+                console.log('data :', data);
+                this.role = data['role'];
+                console.log('role ! : ', this.role);
+                localStorage.setItem('role', this.role);
+                if (this.role === 'admin') {
+                  this.router.navigate(['/admin/clients']);
+                } else if (this.role === 'client') {
+                  this.router.navigate(['/offers']);
+                } else {
+                  // Default redirect for unrecognized roles
+                  this.router.navigate(['/offers']);
+                }
+              });
             } else {
-              // Default redirect for unrecognized roles
-              this.router.navigate(['/offers']);
+              // Account is disabled or email is not verified
+              this.loadingSubject.next(false); // Set loading to false after login attempt
+              let errorMessage = 'Incorrect email or password. Please try again.';
+              if (user && !user.emailVerified) {
+                errorMessage = 'Email not verified. Please verify your email address.';
+              } else if (!enabled) {
+                errorMessage = 'Your account is disabled. Please contact support for assistance.';
+              }
+              Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: errorMessage,
+                confirmButtonText: 'OK'
+              });
             }
           });
         })
@@ -78,17 +101,17 @@ import Swal from 'sweetalert2';
           });
         })
         .finally(() => {
-        // Set loading to false after login attempt
-      });
+          // Set loading to false after login attempt
+          this.loadingSubject.next(false);
+        });
     }
-
-
+    
 
     // Logout a user and clear their information
     logout(): void {
 
       this.auth.signOut().then(() => {
-      localStorage.removeItem('id_token');
+      localStorage.clear();
       this.router.navigate(['/login']) 
       this.isLoggedInSubject.next(false);
       });
@@ -186,4 +209,31 @@ import Swal from 'sweetalert2';
     return localStorage.getItem('role')!;
   }
 
+  checkUserStatus(userId: string): Observable<boolean> {
+    // Make a request to the backend API to check user status
+    return this.checkUser(userId).pipe(
+      map(response => {
+        const enabled = response.enabled;
+        if (enabled) {
+          // User is enabled, proceed with normal login flow
+          console.log('User is enabled');
+          return true;
+        } else {
+          // User is disabled, show a message or take appropriate action
+          console.log('User is disabled');
+          return false;
+        }
+      }),
+      catchError(error => {
+        console.error('Error checking user status', error);
+        return of(false); // Handle error response from the backend API
+      })
+    );
+  }
+  
+
+  checkUser(userId: string): Observable<any> {
+    const url = `${this.apiUrl}status/${userId}`;
+    return this.http.get<any>(url);
+  }
   }

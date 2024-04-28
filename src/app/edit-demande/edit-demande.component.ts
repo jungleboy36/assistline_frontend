@@ -8,7 +8,11 @@ import { DemandeService } from '../services/demande.service';
   styleUrls: []
 })
 export class EditDemandeComponent {
-  constructor(private route: ActivatedRoute, public router : Router ,private demandeService: DemandeService) { }
+  minDate: string;
+  constructor(private route: ActivatedRoute, public router : Router ,private demandeService: DemandeService) { 
+    this.minDate = this.demandeService.getMinDate();
+
+  }
   demande! : any ;
   ngOnInit(): void {
     const demandeId = this.route.snapshot.paramMap.get('id');
