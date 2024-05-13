@@ -7,7 +7,7 @@
   import { AuthGuard } from './AuthGuard';
   import { AngularFireAuth } from '@angular/fire/compat/auth';
 import Swal from 'sweetalert2';
-
+import { PresenceService } from './presence.service';
   @Injectable({
     providedIn: 'root'
   })
@@ -24,7 +24,7 @@ import Swal from 'sweetalert2';
     public role : string ='' ;
     public token: string | null = null;
     errorMessage: any;
-    constructor(private http: HttpClient, private router: Router,private auth: AngularFireAuth,) {
+    constructor(private http: HttpClient, private router: Router,private auth: AngularFireAuth,private presence : PresenceService ) {
       // Load user info from local storage when the service is instantiated
       this.loadUserInfo();
       //
@@ -50,6 +50,8 @@ import Swal from 'sweetalert2';
               console.log('Login successful');
               const userId = user.uid;
               // Set the user ID in local storage
+              this.updateUserOnlineStatus(userId, true);
+
               localStorage.setItem('userId', userId);
               localStorage.setItem('display_name', user.displayName!);
               localStorage.setItem('email', user.email!);
@@ -109,11 +111,17 @@ import Swal from 'sweetalert2';
 
     // Logout a user and clear their information
     logout(): void {
-
+       // Get the current user's ID from local storage
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      // Update user's online status in Firestore to false
+      this.updateUserOnlineStatus(userId, false);
+    }
       this.auth.signOut().then(() => {
       localStorage.clear();
       this.router.navigate(['/login']) 
       this.isLoggedInSubject.next(false);
+
       });
     }
 
@@ -246,4 +254,16 @@ import Swal from 'sweetalert2';
   getDisplayName() : string | null {
     return localStorage.getItem('display_name');
   }
+
+  private updateUserOnlineStatus(userId: string, online: boolean): void {
+    this.presence.updateUserPresence(online,userId).subscribe(
+      response => {
+        console.log('User presence updated successfully:', response);
+      },
+      error => {
+        console.error('Error updating user presence:', error);
+      }
+    );
+  }
+  
   }

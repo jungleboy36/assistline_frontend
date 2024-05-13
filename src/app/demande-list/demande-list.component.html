@@ -89,7 +89,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Details du l'offre</h5>
+                        <h5 class="modal-title">Details de la demande</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -111,11 +111,12 @@
                             <b>Volume :</b> {{demandeDetails.volume}} m3
                             <br>
                             <b> Budget :</b> {{demandeDetails.price}} €
+                            <br> Username : {{demandeDetails.username}}
                         </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" #cancelButton class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" [disabled]="true">Contacter</button>
+                        <button type="button"  class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" (click)="contacter(demandeDetails.user_id,demandeDetails.username)">Contacter</button>
                     </div>
                 </div>
             </div>

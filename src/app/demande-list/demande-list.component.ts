@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { DatePipe } from '@angular/common';
+import { ChatService } from '../services/chat.service';
 @Component({
   selector: 'app-offer-list',
   templateUrl: './demande-list.component.html',
@@ -41,6 +42,8 @@ export class DemandeListComponent implements OnInit {
     destination: '',
     volume: 0,
     price: 0,
+    user_id:'',
+    username:'',
   };
   loading : boolean = true;
 
@@ -49,7 +52,7 @@ export class DemandeListComponent implements OnInit {
   filteredDemandes: any[] =[];
   minDate: string;
 
-  constructor(private demandeService : DemandeService, private router : Router,private formBuilder: FormBuilder, private authService : AuthService, private datePipe : DatePipe) { 
+  constructor(private demandeService : DemandeService, private router : Router,private formBuilder: FormBuilder, private authService : AuthService, private datePipe : DatePipe,private chatService : ChatService) { 
     this.minDate = this.demandeService.getMinDate();
   }
 
@@ -240,5 +243,20 @@ export class DemandeListComponent implements OnInit {
       }
     );
   }
+
+  removeBackdrop(): void {
+    const backdrop = document.querySelector('.modal-backdrop.fade.show');
+    if (backdrop) {
+      backdrop.parentNode!.removeChild(backdrop);    }
+  }
+contacter(receiver_id : string,receiver_display_name:string) {
+  this.chatService.createConversation(receiver_id, this.authService.getUserId(),receiver_display_name,this.authService.getDisplayName()!).subscribe(
+    (data) => {
+      console.log('redirecting to chat....');
+      this.removeBackdrop();
+      this.router.navigate(['/chat']);
+    },
+  )
+}
 
 }

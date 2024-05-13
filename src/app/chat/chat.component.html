@@ -22,33 +22,30 @@
                 <div class="sidebar-left">
                     <div class="sidebar">
                         <div class="chat-sidebar-header d-flex align-items-center">
-                            <div class="avatar mr-3">
-                                <img src="assets/img/user1.jpg" width="50" height="50" class="rounded-circle" alt="image">
-                            </div>
-
-                            <form class="form-group position-relative mb-0">
-                                <label><i class='bx bx-search'></i></label>
-                                <input type="text" class="form-control" placeholder="Search here...">
-                            </form>
+                          
+                            
                         </div>
 
                         <div class="sidebar-content d-flex chat-sidebar" data-simplebar>
                             <div class="chat-menu">
-                                <label class="d-block list-group-label mt-0">Chats</label>
+                                <label class="d-block list-group-label mt-0">Conversations</label>
                         
                                 <ul class="list-group list-group-user list-unstyled mb-0">
                                     <li *ngFor="let conversation of conversations" (click)="selectConversation(conversation)" >
                                         
                                         <div class="d-flex align-items-center">
                                             <div class="avatar mr-3">
-                                                <img src="{{getPicture(conversation)}}" width="50" height="50" class="rounded-circle" alt="image">
-                                                <span class="status-busy"></span>
+                                                <img src="{{getPicture(conversation)}}" width="50" height="50" style="width: 50px;height:50px" class="rounded-circle" alt="image">
+                                                <span class="status-online" *ngIf="isOnline(conversation)"></span>
+                                               <span class="status-offline" *ngIf="! isOnline(conversation)"></span>
+                                               
+
                                             </div>
                                             <div class="user-name">
                                                 <div>
                                                 <h6 class="font-weight-bold">{{ getDisplayName(conversation) }}</h6>
                                             </div>
-                                                <span class="d-block">{{ conversation.lastMessage }}</span>
+                                                <span class="d-block"*ngIf="new(conversation)" ><i class="bx bxs-message-rounded" style="color: red;" ></i><small>  Nouveau message(s)</small></span>
                                             </div>
                                         </div>
                                     </li>
@@ -67,16 +64,23 @@
                                     <div class="header-left d-flex align-items-center mr-3">
                                         <div class="avatar mr-3">
                                             <img src="{{getPicture(selectedConversation)}}" width="70" height="70" class="rounded-circle" alt="image">
-                                            <span class="status-online"></span>
+                                            <span class="status-online" *ngIf="isOnline(selectedConversation)"></span>
+                                            <span class="status-offline" *ngIf="! isOnline(selectedConversation)"></span>
+                                                
                                         </div>
+                                        
                                         <h6 class="mb-0 font-weight-bold" *ngIf="selectedConversation">{{getDisplayName(selectedConversation)}}</h6>
                                     </div>
-
+                                        
                                     <div class="header-right text-right w-100">
                                         
                                     </div>
-                                </div>
 
+                                </div>
+                                <div style="margin-left:90px;margin-top:-30px;margin-bottom:10px;color:green" *ngIf="isOnline(selectedConversation)">
+                                <small>en ligne</small></div>
+                                <div style="margin-left:90px;margin-top:-30px;margin-bottom:10px;color:red" *ngIf="selectedConversation && !isOnline(selectedConversation)">
+                                    <small>déconnecté</small></div>
                                 <div class="chat-container" data-simplebar  >
                                     <div class="chat-content" >
                                       <div *ngFor="let message of messages" >
@@ -107,7 +111,7 @@
                                         <div class="chat-body">
                                           <div class="chat-message">
                                             <p>{{ message.message }}</p>
-                                            <span class="time d-block">{{ message.time | date: 'hh:mm a' }}</span>
+                                            <span class="time d-block" style="margin-bottom:5px">{{ message.time | date: 'hh:mm a' }}</span>
                                           </div>
                                         </div>
                                       </div>

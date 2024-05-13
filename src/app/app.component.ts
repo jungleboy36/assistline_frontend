@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import Pusher from 'pusher-js';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'marketplace';
+  constructor() { 
+
+
+ 
+ 
+  }
+  
+
+
 }

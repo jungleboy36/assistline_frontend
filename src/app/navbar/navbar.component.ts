@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ProfileService } from '../services/profile.service';
-
+import { Location } from '@angular/common';
+import Pusher from 'pusher-js';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -12,8 +13,23 @@ export class NavbarComponent implements OnInit {
   userInfo: any;
   public profileImageUrl: string | null = null;
   notifications: any[] = [];
-
-  constructor(public authService: AuthService,private profileService: ProfileService) { }
+  messages : any[] = [];
+  message : any = {};
+  constructor(public authService: AuthService,private profileService: ProfileService,private location: Location) {
+    const currentUrl = this.location.path();
+    const pusher = new Pusher('1c26d2cd463b15a19666', {
+      cluster: 'eu',
+    })
+    pusher.subscribe(this.authService.getUserId()).bind('new-message',(data:any)=>{
+      if(! currentUrl.includes('chat')){
+        console.log('data username pusher : ',data.username);
+        this.message.username = data.username;
+        this.message.time = data.time;
+        this.getUserPicture(data.userId,this.message);
+        this.messages.push(this.message);
+      }
+    })
+   }
 
   ngOnInit(): void {
     // Retrieve user info from local storage
@@ -95,5 +111,21 @@ export class NavbarComponent implements OnInit {
         console.error('Error marking all notifications as read:', error);
       }
     );
+  }
+
+  getUserPicture(userId: string,message : any) : void {
+    this.profileService.getUserProfile(userId!).subscribe(
+      data => {
+        // Set the profile image URL
+        message.image = data.image;
+      },
+      error => {
+        console.error('Error fetching user profile', error);
+      }
+    );
+  }
+
+  clearAllMessages(){
+    this.messages = [];
   }
 }

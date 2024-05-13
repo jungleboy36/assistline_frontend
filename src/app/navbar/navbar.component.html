@@ -31,77 +31,36 @@
                         <div class="message-btn">
                             <i class='bx bx-envelope'></i>
 
-                            <span class="badge badge-primary">4</span>
+                            <span class="badge badge-primary" *ngIf="messages.length > 0">{{messages.length}}</span>
                         </div>
                     </a>
 
                     <div class="dropdown-menu">
                         <div class="dropdown-header d-flex justify-content-between align-items-center">
-                            <span class="title d-inline-block">4 New Message</span>
-                            <span class="clear-all-btn d-inline-block">Clear All</span>
+                            <span class="title d-inline-block" *ngIf="messages.length > 0">{{messages.length}}Nouveau(x) Message(s)</span>
+                            <span class="clear-all-btn d-inline-block" (click)="clearAllMessages()"  *ngIf="messages.length > 0">Marquer tous comme lus</span>
                         </div>
 
                         <div class="dropdown-body">
+                            <div *ngIf="messages.length == 0" class="no-notification-box" style="margin-left:50px;"><i><small>Aucun nouveau message pour le moment</small></i></div>
+
+                            <div *ngFor="let msg of messages">
                             <a href="#" class="dropdown-item d-flex align-items-center">
                                 <div class="figure">
-                                    <img src="assets/img/user1.jpg" class="rounded-circle" alt="image">
+                                    <img src="{{msg.image}}" class="rounded-circle" alt="image">
                                 </div>
 
                                 <div class="content d-flex justify-content-between align-items-center">
                                     <div class="text">
-                                        <span class="d-block">Sarah Taylor</span>
-                                        <p class="sub-text mb-0">UX/UI design</p>
+                                        <span class="d-block">{{msg.username}}</span>
                                     </div>
-                                    <p class="time-text mb-0">2 sec ago</p>
-                                </div>
-                            </a>
-
-                            <a href="#" class="dropdown-item d-flex align-items-center">
-                                <div class="figure">
-                                    <img src="assets/img/user2.jpg" class="rounded-circle" alt="image">
-                                </div>
-
-                                <div class="content d-flex justify-content-between align-items-center">
-                                    <div class="text">
-                                    <span class="d-block">Lucy Eva</span>
-                                        <p class="sub-text mb-0">Web developers</p>
-                                    </div>
-                                    <p class="time-text mb-0">5 sec ago</p>
-                                </div>
-                            </a>
-
-                            <a href="#" class="dropdown-item d-flex align-items-center">
-                                <div class="figure">
-                                    <img src="assets/img/user3.jpg" class="rounded-circle" alt="image">
-                                </div>
-
-                                <div class="content d-flex justify-content-between align-items-center">
-                                    <div class="text">
-                                    <span class="d-block">James Anderson</span>
-                                        <p class="sub-text mb-0">Content whitter</p>
-                                    </div>
-                                    <p class="time-text mb-0">3 min ago</p>
-                                </div>
-                            </a>
-
-                            <a href="#" class="dropdown-item d-flex align-items-center">
-                                <div class="figure">
-                                    <img src="assets/img/user4.jpg" class="rounded-circle" alt="image">
-                                </div>
-
-                                <div class="content d-flex justify-content-between align-items-center">
-                                    <div class="text">
-                                    <span class="d-block">Steven Smith</span>
-                                        <p class="sub-text mb-0">Digital marketing</p>
-                                    </div>
-                                    <p class="time-text mb-0">7 min ago</p>
+                                    <p class="time-text mb-0">2 pm</p>
                                 </div>
                             </a>
                         </div>
-
-                        <div class="dropdown-footer">
-                            <a href="#" class="dropdown-item">View All</a>
-                        </div>
+                     
+                       
+                    </div>
                     </div>
                 </li>
 
