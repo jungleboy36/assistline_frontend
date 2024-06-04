@@ -20,6 +20,7 @@ import { HomeComponent } from './home/home.component';
 import { ChatComponent } from './chat/chat.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ListOffersVisitorComponent } from './list-offers-visitor/list-offers-visitor.component';
+import { AvisComponent } from './avis/avis.component';
 const routes: Routes = [
 
 {path:'offers',
@@ -44,6 +45,7 @@ children :[
   {
     path:'admin',
     children :[
+  {path :'avis',component: AvisComponent, canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
   {path:'companies',component:AdminCompaniesComponent , canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
   {path:'clients',component:AdminClientsComponent , canActivate: [AuthGuard], data: { expectedRole: 'admin' }},
 

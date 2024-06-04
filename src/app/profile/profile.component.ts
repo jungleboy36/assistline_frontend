@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
   maxImageSizeKB = 850; // Maximum allowed Base64 image size in KB
   loading: boolean = false;
   userProfileLoading : boolean = false;
+  feedbacks : any[] =[];
   constructor(
     private profileService: ProfileService,
     private authService: AuthService,
@@ -33,17 +34,13 @@ export class ProfileComponent implements OnInit {
     this.uid = this.authService.getUserId();
     // Initialize the profile form
     this.initForm();
-
+    this.loadFeedbacks();
     // Fetch the user profile data
     this.profileService.getUserProfile(this.uid!).subscribe(
       data => {
         this.userProfile = data;
-
         // Populate the form with user data
         this.profileForm.patchValue(this.userProfile);
-        
-      
-       
       }
       ,
       
@@ -51,6 +48,7 @@ export class ProfileComponent implements OnInit {
         console.error('Error fetching user profile', error);
       }
     );
+    
   }
 
   // Initialize the form
@@ -201,5 +199,37 @@ export class ProfileComponent implements OnInit {
     return emailRegex.test(email);
   }
 
+  loadFeedbacks(){
+    this.profileService.retrieve_feedbacks(this.uid!).subscribe((feedbacks)=>{
+      this.feedbacks = feedbacks;
+      
+      console.log("feedbacks: ", this.feedbacks);
+    })
+  }
+
+  getStarsArray(stars: string): number[] {
+    return Array(parseInt(stars, 10));
+  }
+
+  getEmptyStarsArray(stars: string): number[] {
+    return Array(5 - parseInt(stars, 10));
+  }
+
+
+reportFeedback(id : string){
+  if (window.confirm('Voulez-vous signaler cet avis ?')) {
+    this.profileService.report_feedback(id).subscribe((response)=>{
+      console.log("feedback reported: ", response);
+      Swal.fire({
+        
+        text: 'Avis signalé !',
+        icon: 'success',
+        confirmButtonText: 'OK'
+    });
+      this.loadFeedbacks();
+    })
+    
+  }
+}
 }
 

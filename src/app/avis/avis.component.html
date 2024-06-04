@@ -1,0 +1,87 @@
+<html lang="zxx">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+ 
+
+    <link rel="icon" type="image/png" src="../../assets/img/favicon.png">
+<style>
+    .truncate {
+        width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+</head>
+
+<body>
+  <app-sidebar-admin></app-sidebar-admin>
+  <div class="main-content d-flex flex-column">
+  <app-navbar-admin></app-navbar-admin>
+  <br><br>
+  <div class="container mt-4">
+      <h2 class="text-center mr-4">Gestion des avis</h2>
+
+<!--start modal-->
+      <div class="d-flex justify-content-center" >
+        <div class="modal fade" id="avisModal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Avis</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{comment}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- end modal-->
+        <table class="table table-striped mt-4">
+        
+            <thead>
+                <tr>
+                   
+                    <th>Email société</th>
+                    <th>Email client</th>
+                    <th>Avis</th>
+                 
+                    <th><div style="margin-left:80px">Actions</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <!-- Loop through companies and display each company's data -->
+                <tr *ngFor="let f of feedbacks">
+                    
+                    <td>{{ f.company_email }}</td>
+                    <td>{{ f.client_email }}</td>
+                    <td><div class="truncate">{{ f.comment }}</div></td>
+                    <td><button type="button" class="btn btn-danger" (click)="deleteReport(f)"><i class="bx bxs-trash"></i>Supprimer</button><button type="button" class="btn btn-primary" style="margin-left:10px" data-toggle="modal" data-target="#avisModal" (click)="selectFeedback(f.comment)"><i class="bx bx-show" style="margin-right: 5px;" ></i>Afficher</button></td>
+                   
+                       
+                           
+                        
+                        
+                   
+                    
+                </tr>
+            </tbody>
+        </table>
+      </div>
+  </div>
+</div>
+  </body>
+  </html>

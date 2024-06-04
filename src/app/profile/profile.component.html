@@ -8,6 +8,37 @@
 
     <title>User Profile</title>
     <link rel="icon" type="image/png" href="../../assets/img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .report:hover{
+            color: red;
+            width: 20px;
+            height:20px
+        }
+        .checked {
+            color: orange;
+        }
+
+        .profile-rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-rating img {
+            margin-right: 10px; /* Adjust the value as needed */
+            width:30px; /* Adjust the value as needed */
+            height: 30px; /* Adjust the value as needed */
+            border-radius: 50%; /* To make the image circular */
+        }
+
+        .profile-rating h6 {
+            margin: 0 10px 0 0; /* Adjust the value as needed */
+        }
+
+        .profile-rating .fa-star {
+            margin-right: 3px; /* Adjust the value as needed */
+        }
+    </style>
 </head>
 
 <body>
@@ -91,7 +122,18 @@
                                 </div>
 
                                 <div class="card-body">
-           
+                                    <div name="rating" *ngFor="let feedback of feedbacks">
+                                    <div class="profile-rating">
+                                       <img [src]="feedback.client_image" alt="Profile Image"> 
+                                       <h6><b>{{feedback.client_display_name}}</b></h6>
+                                       <span *ngFor="let star of getStarsArray(feedback.star)" class="fa fa-star checked"></span>
+                                       <span *ngFor="let empty of getEmptyStarsArray(feedback.star)" class="fa fa-star"></span>
+                                      <i  class="bx bx-error-circle report" (click)="reportFeedback(feedback.id)"></i> <i style="color: red;margin-left:5px" *ngIf="feedback.flagged">signalé</i>
+                                    
+                                    </div>
+                                    <p style="margin-left:40px;">{{feedback.comment}}   <small style="margin-left: 5px;">    {{feedback.timestamp | date }}</small></p>  
+                                <br>
+                                </div>
                                 </div>
                             </div>
 

@@ -30,6 +30,7 @@ import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ListOffersVisitorComponent } from './list-offers-visitor/list-offers-visitor.component';
+import { AvisComponent } from './avis/avis.component';
 const firebaseConfig = environment.firebaseConfig;
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ const firebaseConfig = environment.firebaseConfig;
     HomeComponent,
     PaymentComponent,
     ListOffersVisitorComponent,
+    AvisComponent,
    
     
     

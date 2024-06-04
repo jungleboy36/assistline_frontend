@@ -23,7 +23,7 @@ export class ChatComponent implements OnInit,AfterViewInit {
   @ViewChild('cancelButtonCompany') cancelButtonCompany: ElementRef | undefined;
   @ViewChild('cancelButtonClient') cancelButtonClient: ElementRef | undefined;
   @ViewChild('feedbackForm', { static: false }) feedbackForm: NgForm | undefined;
-
+  flagged : boolean = false;
   conversations: any[] = [];
   conversationsUpdate: any[] = [];
   autoMessage : string = ''
@@ -501,10 +501,12 @@ saveFeedback(feedbackForm: NgForm): void {
   const comment = feedbackForm.value.comment;
   console.log('Star Rating:', star);
   console.log('Comment:', comment);
+  console.log("saved flag: ",this.flagged);
   const data = {
     feedback_id :this.feedback_id,
     star,
     comment,
+    flagged : this.flagged,
     client_id: this.authService.getUserId(),
     company_id: this.getSenderId(this.selectedConversation),
   };
@@ -527,10 +529,15 @@ retrieve_feedbackk(){
     const feedbackComment = document.querySelector('textarea[name="comment"]') as HTMLInputElement;
     feedbackComment.value = data[0].comment;
     this.feedback_id = data[0].id;
+    this.flagged = data[0].flagged;
       const starRadio = document.querySelector(`input[name="star"][value="${data[0].star}"]`) as HTMLInputElement;
       if (starRadio) {
         starRadio.checked = true;
       }
+      this.feedbackForm?.controls['star'].setValue(data[0].star);
+      this.feedbackForm?.controls['star'].updateValueAndValidity();
+      this.feedbackForm?.controls['comment'].setValue(data[0].comment);
+      this.feedbackForm?.controls['comment'].updateValueAndValidity();
   })
 }
     }

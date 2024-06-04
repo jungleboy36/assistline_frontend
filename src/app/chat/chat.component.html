@@ -215,7 +215,6 @@
                                     </div>
                                         
                                     <div class="header-right text-right w-100" *ngIf="isCompanyy">
-                                        <button type="button" class="btn btn-warning rounded-pill" *ngIf="paymentDone" data-toggle="modal" style="margin-right: 10px;" data-target="#feedbackModal"><i class="bx bx-happy"></i>Avis</button>
 
                                         <button type="button" class="btn btn-success rounded-pill" [disabled]="!paypalExist || paymentDone" data-toggle="modal" data-target="#companyPayment"><i class="bx bx-money"></i> Paiement</button>
                                         <small style="color: red;"*ngIf="!paypalExist"><i class="bx bx-error-circle" ></i>Ajoutez d'abord votre compte paypal dans votre profil</small>
@@ -223,6 +222,8 @@
 
                                     </div>
                                     <div class="header-right text-right w-100" *ngIf="!isCompanyy">
+                                        <button type="button" class="btn btn-warning rounded-pill" *ngIf="paymentDone" data-toggle="modal" style="margin-right: 10px;" data-target="#feedbackModal"><i class="bx bx-happy"></i>Avis</button>
+
                                         <button type="button" class="btn btn-success rounded-pill"  data-toggle="modal" data-target="#clientPayment" [disabled]="!amount || paymentDone"><i class="bx bx-money" ></i> Paiement</button>
                                         <div *ngIf="!amount"><small><i class="bx bx-error-circle"></i></small><small >L'entreprise doit d'abord autoriser le paiement</small></div>
                                             <div *ngIf="paymentDone"><small style="color: green;"><i class="bx bx-check-circle"></i></small><small style="color: green;">Paiement effectué !</small></div>
@@ -299,17 +300,7 @@
 
             <!-- Start Footer End -->
             <footer class="footer-area">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 col-sm-6 col-md-6">
-                        <p>Copyright <i class='bx bx-copyright'></i> 2020 <a href="#">Olaf</a>. All rights reserved</p>
-                    </div>
-
-                    <div class="col-lg-6 col-sm-6 col-md-6 text-right">
-                        <p>Designed by ❤️ <a href="https://envytheme.com/" target="_blank">EnvyTheme</a></p>
-                        
-
-                    </div>
-                </div>
+              
             </footer>
             <!-- End Footer End -->
 

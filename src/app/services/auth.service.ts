@@ -65,7 +65,7 @@ import { PresenceService } from './presence.service';
                 console.log('role ! : ', this.role);
                 localStorage.setItem('role', this.role);
                 if (this.role === 'admin') {
-                  this.router.navigate(['/admin/clients']);
+                  this.router.navigate(['/admin/companies']);
                 } else if (this.role === 'client') {
                   this.router.navigate(['/offers']);
                 } else {
