@@ -8,11 +8,12 @@
   import { AngularFireAuth } from '@angular/fire/compat/auth';
 import Swal from 'sweetalert2';
 import { PresenceService } from './presence.service';
+import { environment } from 'src/environments/environment';
   @Injectable({
     providedIn: 'root'
   })
   export class AuthService {
-    private apiUrl = 'http://localhost:8000/';
+    private apiUrl = environment.apiUrl+'/' ;
 
     // Observable to track the logged-in state of the user
     private isLoggedInSubject = new BehaviorSubject<boolean>(false);

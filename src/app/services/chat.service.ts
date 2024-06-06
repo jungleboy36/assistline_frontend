@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 export class ChatService {
 
   constructor(private http: HttpClient) { }
-  private baseUrl = 'http://localhost:8000';
+  private baseUrl = environment.apiUrl;
 
  
   getConversations(userId: string): Observable<any[]> {

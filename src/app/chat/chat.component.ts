@@ -4,7 +4,6 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { interval, switchMap } from 'rxjs';
 import { PresenceService } from '../services/presence.service';
 import Pusher from 'pusher-js';
-import { PusherAuthService } from '../services/pusher.service';
 import Swal from 'sweetalert2';
 import { ProfileService } from '../services/profile.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -44,7 +43,7 @@ export class ChatComponent implements OnInit,AfterViewInit {
   pusher = new Pusher('1c26d2cd463b15a19666', {
       cluster: 'eu',
     })
-  constructor(private chatService: ChatService, public authService : AuthService,private presenceService: PresenceService, private pusherAuthService: PusherAuthService, private profileService : ProfileService,private sanitizer: DomSanitizer, private renderer2: Renderer2,
+  constructor(private chatService: ChatService, public authService : AuthService,private presenceService: PresenceService, private profileService : ProfileService,private sanitizer: DomSanitizer, private renderer2: Renderer2,
     @Inject(DOCUMENT) private _document:Document) {
    }
 

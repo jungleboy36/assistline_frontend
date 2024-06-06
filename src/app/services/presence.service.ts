@@ -2,12 +2,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PresenceService {
-    private apiUrl = 'http://127.0.0.1:8000/' 
+    private apiUrl = environment.apiUrl + '/' 
 
   constructor(private http: HttpClient) { }
 
