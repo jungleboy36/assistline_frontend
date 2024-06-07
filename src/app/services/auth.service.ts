@@ -56,6 +56,7 @@ import { environment } from 'src/environments/environment';
               localStorage.setItem('userId', userId);
               localStorage.setItem('display_name', user.displayName!);
               localStorage.setItem('email', user.email!);
+              this.setPicture();
               this.isLoggedInSubject.next(true);
               user.getIdToken().then(id_token => {
                 localStorage.setItem('id_token', id_token);
@@ -247,10 +248,10 @@ import { environment } from 'src/environments/environment';
   }
 
   getNotifications(userId: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:8000/notifications/?user_id=${userId}`);
+    return this.http.get<any>(`${this.apiUrl}notifications/?user_id=${userId}`);
   }
   markAllNotificationsAsRead(userId : string): Observable<any> {
-    return this.http.post<any>(`http://localhost:8000/notifications/mark-all-as-read/?user_id=${userId}`, {});
+    return this.http.post<any>(`${this.apiUrl}notifications/mark-all-as-read/?user_id=${userId}`, {});
   }
   getDisplayName() : string | null {
     return localStorage.getItem('display_name');
@@ -266,5 +267,26 @@ import { environment } from 'src/environments/environment';
       }
     );
   }
+
+  getUserProfile(uid: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}profile/?uid=${uid}`);
+  }
   
+
+setPicture(){
+
+  this.getUserProfile(this.getUserId()).subscribe(
+    data => {
+      // Set the profile image URL
+      console.log("data from set picture: ",data)
+      const profileImageUrl = data.image;
+      // Store the profile image URL in local storage for future use
+      localStorage.setItem('profileImageUrl', profileImageUrl!);
+    },
+    error => {
+      console.error('Error fetching user profile', error);
+    }
+  );
+}
+
   }

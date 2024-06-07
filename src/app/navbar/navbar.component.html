@@ -5,7 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    
+        <style>
+            .truncate {
+                width: 300px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        </style>
     </head>    
     
 
@@ -89,8 +96,8 @@
                     
                                 <div class="content">
                                     <!-- Display the notification message and timestamp -->
-                                    <span class="d-block">{{ notification.message }}</span>
-                                    <p class="sub-text mb-0">{{ notification.timestamp | date:'medium' }}</p>
+                                    <span class="d-block truncate" style="font-size: small; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">{{ notification.message }}</span>
+                                    <p class="sub-text mb-0">{{ notification.timestamp | updateDuration }}</p>
                                 </div>
                             </a>
                         </div>

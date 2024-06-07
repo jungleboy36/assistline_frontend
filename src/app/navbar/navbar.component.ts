@@ -20,8 +20,11 @@ export class NavbarComponent implements OnInit {
   constructor(public authService: AuthService,private profileService: ProfileService,private location: Location) {
     this.email = localStorage.getItem('email');
     this.display_name = localStorage.getItem('display_name');
-    this.profileImageUrl = localStorage.getItem('profileImageUrl');
-    
+    const storedProfileImageUrl = localStorage.getItem('profileImageUrl');
+    if (storedProfileImageUrl) {
+      // Use the stored profile image URL
+      this.profileImageUrl = storedProfileImageUrl;
+    }    
  
     const currentUrl = this.location.path();
     const pusher = new Pusher('1c26d2cd463b15a19666', {
@@ -48,20 +51,8 @@ export class NavbarComponent implements OnInit {
     if (storedProfileImageUrl) {
       // Use the stored profile image URL
       this.profileImageUrl = storedProfileImageUrl;
-    } else {
-      // Fetch the profile image URL from the server
-      const uid = this.authService.getUserId();
-      this.profileService.getUserProfile(uid!).subscribe(
-        data => {
-          // Set the profile image URL
-          this.profileImageUrl = data.image;
-          // Store the profile image URL in local storage for future use
-          localStorage.setItem('profileImageUrl', this.profileImageUrl!);
-        },
-        error => {
-          console.error('Error fetching user profile', error);
-        }
-      );
+      console.log("got image from localstorage")
+    
     }
   
     this.profileService.profileUpdated.subscribe(() => {

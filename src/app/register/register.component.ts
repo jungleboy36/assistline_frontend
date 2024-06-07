@@ -42,6 +42,7 @@ export class RegisterComponent {
         text: 'Veuillez remplir tous les champs obligatoires.',
         confirmButtonText: 'OK'
       });
+      this.loading = false;
       return;
     }
 

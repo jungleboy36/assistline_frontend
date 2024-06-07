@@ -14,7 +14,7 @@ export class ProfileService {
 
   // Method to get the user profile data
   getUserProfile(uid: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/?uid=${uid}`);
+    return this.http.get<any>(`${this.apiUrl}/profile/?uid=${uid}`);
   }
 
   // Method to update the user profile data
