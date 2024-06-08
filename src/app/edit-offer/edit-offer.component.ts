@@ -66,7 +66,7 @@ export class EditOfferComponent implements AfterViewInit{
     const destinationInput = document.getElementById('destination') as HTMLInputElement;
     const originSuggestions = document.getElementById('origin-suggestions') as HTMLUListElement;
     const destinationSuggestions = document.getElementById('destination-suggestions') as HTMLUListElement;
-    
+
     const showSuggestions = (query: string, suggestionsElement: HTMLUListElement, inputElement: HTMLInputElement) => {
       geocoder.options.geocoder!.geocode(query, (results) => {
         suggestionsElement.innerHTML = '';
@@ -235,13 +235,16 @@ export class EditOfferComponent implements AfterViewInit{
           // Save the route data
          
         }).addTo(this.map);
-  
+          $('.leaflet-routing-alternatives-container').remove();
+
         // Re-add the existing markers to the map
         this.originPin.addTo(this.map);
 
         this.destinationPin.addTo(this.map);
         const bounds = new L.LatLngBounds(originLatLng, destinationLatLng);
         this.map.fitBounds(bounds, { padding: [20, 20] });
+        $('.leaflet-routing-alternatives-container').remove();
+
       } else {
         alert("assurez-vous de placer les épingles à l'intérieur de la france");
       }
