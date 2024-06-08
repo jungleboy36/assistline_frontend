@@ -187,7 +187,8 @@ export class ProfileComponent implements OnInit {
         this.userProfile = data;
         // Populate the form with the updated user data
         this.profileForm.patchValue(this.userProfile);
-
+        localStorage.removeItem('profileImageUrl');
+        localStorage.setItem('profileImageUrl',data.image);
       },
       error => {
         console.error('Error fetching user profile', error);

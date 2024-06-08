@@ -41,12 +41,15 @@ import { environment } from 'src/environments/environment';
       this.loadingSubject.next(true); // Set loading to true when login process starts
       this.auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
+          this.loadingSubject.next(true); 
           const user = userCredential.user;
           console.log("user credentials : ", user);
           // Check if email is verified and account is enabled
           console.log("user id: ", user!.uid);
           this.checkUserStatus(user!.uid).subscribe(enabled => {
             if (user && user.emailVerified && enabled) {
+              this.loadingSubject.next(true); 
+
               // Proceed with normal login flow
               console.log('Login successful');
               const userId = user.uid;
@@ -56,7 +59,6 @@ import { environment } from 'src/environments/environment';
               localStorage.setItem('userId', userId);
               localStorage.setItem('display_name', user.displayName!);
               localStorage.setItem('email', user.email!);
-              this.setPicture();
               this.isLoggedInSubject.next(true);
               user.getIdToken().then(id_token => {
                 localStorage.setItem('id_token', id_token);
@@ -66,6 +68,8 @@ import { environment } from 'src/environments/environment';
                 this.role = data['role'];
                 console.log('role ! : ', this.role);
                 localStorage.setItem('role', this.role);
+                this.loadingSubject.next(true); 
+                this.setPicture().then(()=>{
                 if (this.role === 'admin') {
                   this.router.navigate(['/admin/companies']);
                 } else if (this.role === 'client') {
@@ -75,6 +79,7 @@ import { environment } from 'src/environments/environment';
                   this.router.navigate(['/offers']);
                 }
               });
+            });
             } else {
               // Account is disabled or email is not verified
               this.loadingSubject.next(false); // Set loading to false after login attempt
@@ -272,21 +277,24 @@ import { environment } from 'src/environments/environment';
     return this.http.get<any>(`${this.apiUrl}profile/?uid=${uid}`);
   }
   
-
-setPicture(){
-
-  this.getUserProfile(this.getUserId()).subscribe(
-    data => {
-      // Set the profile image URL
-      console.log("data from set picture: ",data)
-      const profileImageUrl = data.image;
-      // Store the profile image URL in local storage for future use
-      localStorage.setItem('profileImageUrl', profileImageUrl!);
-    },
-    error => {
-      console.error('Error fetching user profile', error);
-    }
-  );
-}
+  setPicture(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.getUserProfile(this.getUserId()).subscribe(
+        data => {
+          // Set the profile image URL
+          console.log("data from set picture: ", data)
+          const profileImageUrl = data.image;
+          // Store the profile image URL in local storage for future use
+          localStorage.setItem('profileImageUrl', profileImageUrl!);
+          resolve(); // Resolve the promise after setting the picture
+        },
+        error => {
+          console.error('Error fetching user profile', error);
+          reject(error); // Reject the promise in case of an error
+        }
+      );
+    });
+  }
+  
 
   }
