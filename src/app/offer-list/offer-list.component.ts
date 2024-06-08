@@ -271,13 +271,15 @@ export class OfferListComponent implements OnInit, AfterViewInit {
           // Save the route data
          
         }).addTo(this.map);
-  
+        $('.leaflet-routing-alternatives-container').remove();
         // Re-add the existing markers to the map
         this.originPin.addTo(this.map);
 
         this.destinationPin.addTo(this.map);
         const bounds = new L.LatLngBounds(originLatLng, destinationLatLng);
         this.map.fitBounds(bounds, { padding: [20, 20] });
+        $('.leaflet-routing-alternatives-container').remove();
+
       } else {
         alert("assurez-vous de placer les épingles à l'intérieur de la france");
       }
