@@ -98,13 +98,22 @@ export class RegisterComponent {
       },
       error => {
         this.loading = false;
-
+        console.log("error: ",error.error.error);
+        if (error.error.error == "The user with the provided email already exists (EMAIL_EXISTS)."){
+          Swal.fire({
+            icon: 'error',
+            title: 'Échec de l\'inscription',
+            text: 'Un utilisateur avec cet email existe déjà.',
+            confirmButtonText: 'OK'
+          });
+        }
+        else{
         Swal.fire({
           icon: 'error',
           title: 'Échec de l\'inscription',
           text: 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer plus tard.',
           confirmButtonText: 'OK'
-        });
+        });}
       }
     );
   }

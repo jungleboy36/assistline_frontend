@@ -56,6 +56,7 @@
             </div>
 
             <div class="modal-body">
+               <h6> l'entreprise vous a proposé ce montant pour l'offre:<span class="btn btn-success rounded-pill" style="margin-left: 10px;">{{amount}} $</span></h6>
                 <div id="paypal-button-container"></div>
                 <button type="button" #cancelButtonClient class="btn btn-secondary" data-dismiss="modal">Annuler</button>
             
@@ -284,7 +285,7 @@
                                     <form #messageForm="ngForm" (ngSubmit)="sendMessage()" class="d-flex align-items-center">
                              
 
-                                        <input type="text" class="form-control" name="newMessage" [(ngModel)]="newMessage" placeholder="Type your message...">
+                                        <input type="text" class="form-control" name="newMessage" [(ngModel)]="newMessage" placeholder="Saisir votre message...">
 
                                         <button type="submit" class="send-btn d-inline-block"  *ngIf="isEmpty(newMessage)">Envoyer <i class="bx bx-paper-plane"></i></button>
                                     </form>
