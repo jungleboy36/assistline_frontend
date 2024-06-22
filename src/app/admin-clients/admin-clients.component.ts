@@ -53,7 +53,9 @@ export class AdminClientsComponent implements OnInit {
         this.adminService.updateClientStatus(client.uid, newStatus).subscribe(
             response => {
                 client.enabled = newStatus;
-                this.selectedUser = ''; // Update local state based on the response
+                this.selectedUser = ''; 
+                this.loadClients();
+                // Update local state based on the response
                 /* Swal.fire({
                     icon: 'success',
                     title: 'Mise à jour réussie',

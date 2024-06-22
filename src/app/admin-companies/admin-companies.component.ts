@@ -56,7 +56,8 @@ export class AdminCompaniesComponent {
         this.adminService.updateCompanyStatus(company.uid, newStatus).subscribe(
             response => {
                 company.enabled = newStatus;
-                this.selectedUser= ''                // Update local state based on the response
+                this.selectedUser= '';
+                this.loadCompanies();                // Update local state based on the response
                 /* Swal.fire({
                     icon: 'success',
                     title: 'Mise à jour réussie',

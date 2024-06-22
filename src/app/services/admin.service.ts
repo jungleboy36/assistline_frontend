@@ -32,10 +32,10 @@ export class AdminService {
   }
 
   getNotifications(userId: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:8000/notifications/?user_id=${userId}`);
+    return this.http.get<any>(`${this.baseUrl}/notifications/?user_id=${userId}`);
   }
   markAllNotificationsAsRead(userId : string): Observable<any> {
-    return this.http.post<any>(`http://localhost:8000/notifications/mark-all-as-read/?user_id=${userId}`, {});
+    return this.http.post<any>(`${this.baseUrl}/notifications/mark-all-as-read/?user_id=${userId}`, {});
   }
 
   dashboard():Observable<any>{

@@ -56,7 +56,7 @@
             </div>
 
             <div class="modal-body">
-               <h6> l'entreprise vous a proposé ce montant pour l'offre:<span class="btn btn-success rounded-pill" style="margin-left: 10px;">{{amount}} $</span></h6>
+               <h6> l'entreprise vous a proposé ce montant pour l'offre:<span class="btn btn-success rounded-pill" style="margin-left: 10px;">{{amount}} €</span></h6>
                 <div id="paypal-button-container"></div>
                 <button type="button" #cancelButtonClient class="btn btn-secondary" data-dismiss="modal">Annuler</button>
             
@@ -226,7 +226,7 @@
                                         <button type="button" class="btn btn-warning rounded-pill" *ngIf="loadingAvis && paymentDone  " data-toggle="modal" style="margin-right: 10px;" data-target="#feedbackModal"><i class="bx bx-happy"></i>Avis</button>
 
                                         <button type="button" class="btn btn-success rounded-pill"  data-toggle="modal" data-target="#clientPayment" [disabled]="!amount || paymentDone"><i class="bx bx-money" ></i> Paiement</button>
-                                        <div *ngIf="!amount"><small><i class="bx bx-error-circle"></i></small><small >L'entreprise doit d'abord autoriser le paiement</small></div>
+                                        <div *ngIf="amount == 0"><small><i class="bx bx-error-circle"></i></small><small >L'entreprise doit d'abord autoriser le paiement</small></div>
                                             <div *ngIf="paymentDone"><small style="color: green;"><i class="bx bx-check-circle"></i></small><small style="color: green;">Paiement effectué !</small></div>
     
 

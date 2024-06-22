@@ -127,7 +127,8 @@ export class ChatComponent implements OnInit,AfterViewInit {
   selectConversation(conversation: any) {
     this.selectedConversation = conversation;
     this.selectedConversation.notif = false;
-    
+    this.getPaymentData();
+    this.retrieve_feedbackk();
     this.fetchMessages(conversation.id);
     this.paymentChannel = this.pusher.subscribe(this.selectedConversation.id);
     this.paymentChannel.bind('paiements',(data :any)=>{
@@ -354,7 +355,7 @@ appendFirstScript(merchantId : string): Promise<void> {
     // Create the first script element
     const s = this.renderer2.createElement('script');
     s.type = 'text/javascript';
-    s.src = 'https://www.paypal.com/sdk/js?merchant-id='+merchantId+'&client-id=ASNm3WXakzlzfdZ5M7oTK6ggcGhL_fEYYT75QB7CXnHfdkF2ns7UHSnnZhWfBGKhNkU_Ty6gSEfw1EM_';
+    s.src = 'https://www.paypal.com/sdk/js?merchant-id='+merchantId+'&client-id=ASNm3WXakzlzfdZ5M7oTK6ggcGhL_fEYYT75QB7CXnHfdkF2ns7UHSnnZhWfBGKhNkU_Ty6gSEfw1EM_&currency=EUR';
     s.async = true;
 
     // Set up a callback for when the first script is loaded
@@ -369,14 +370,20 @@ appendFirstScript(merchantId : string): Promise<void> {
 
 appendSecondScript() {
   // Create the second script element
+  const paypalButtonContainer = this._document.getElementById('paypal-button-container');
+  if (paypalButtonContainer) {
+    paypalButtonContainer.innerHTML = '';
+  }
   const ss = this.renderer2.createElement('script');
+  ss.id = 'paypal-script';
   ss.text = `
   paypal.Buttons({
     createOrder: function(data, actions) {
       return actions.order.create({
         purchase_units: [{
           amount: {
-            value: '${this.amount}'
+            value: '${this.amount}',
+            currency_code: 'EUR'
           },
           payee: {
             email_address: 'achrafhafsia36-facilitator@gmail.com'} // Specify the email address of the recipient
@@ -411,7 +418,12 @@ appendSecondScript() {
   this.renderer2.appendChild(this._document.head, ss);
 }
 
-
+removePayPalScript() {
+  const script = this._document.getElementById('paypal-script');
+  if (script) {
+    this.renderer2.removeChild(this._document.head, script);
+  }
+}
 
 newPayment(){
   
@@ -442,15 +454,20 @@ newPayment(){
 }
 
 getPaymentData():any{
-  if(this.selectedConversation.payment_id && this.selectedConversation.payment_id != null){
+  if(!!this.selectedConversation.payment_id && this.selectedConversation.payment_id != null){
   this.chatService.retrievePayment(this.selectedConversation.payment_id).subscribe((data)=>{
   this.amount = data.amount;
   this.paymentDone = data.paid ;
   this.loadingAvis = true;
+  this.removePayPalScript();
+  this.appendSecondScript();
   console.log("payment data: ",data);
   })
 }
-
+else{
+  
+  this.paymentDone = false;
+}
 }
 
 
@@ -510,6 +527,12 @@ saveFeedback(feedbackForm: NgForm): void {
   console.log('Star Rating:', star);
   console.log('Comment:', comment);
   console.log("saved flag: ",this.flagged);
+  if(this.selectedConversation.feedback_id){
+    this.feedback_id = this.selectedConversation.feedback_id;
+  }
+  else{
+    this.feedback_id = 'none';
+  }
   const data = {
     feedback_id :this.feedback_id,
     star,
@@ -521,6 +544,7 @@ saveFeedback(feedbackForm: NgForm): void {
 
   this.chatService.save_feedback(data).subscribe(()=>{
     Swal.fire({ title: 'avis enregistré !', icon: 'success'});
+    this.retrieve_feedbackk();
 
   });
   // Add your logic to handle the form submission, such as making an HTTP request to save the feedback
@@ -534,18 +558,29 @@ saveFeedback(feedbackForm: NgForm): void {
 retrieve_feedbackk(){
   this.chatService.retrieve_feedback(this.authService.getUserId(),this.getSenderId(this.selectedConversation)!).subscribe((data)=>{
     console.log('feedback data: ',data[0]);
-    const feedbackComment = document.querySelector('textarea[name="comment"]') as HTMLInputElement;
-    feedbackComment.value = data[0].comment;
-    this.feedback_id = data[0].id;
-    this.flagged = data[0].flagged;
+    if (data && data.length > 0) {
+      console.log('feedback data: ', data[0]);
+      const feedbackComment = document.querySelector('textarea[name="comment"]') as HTMLInputElement;
+      feedbackComment.value = data[0].comment;
+      this.feedback_id = data[0].id;
+      this.selectedConversation.feedback_id = data[0].id;
+      this.flagged = data[0].flagged;
+
       const starRadio = document.querySelector(`input[name="star"][value="${data[0].star}"]`) as HTMLInputElement;
       if (starRadio) {
         starRadio.checked = true;
       }
+
       this.feedbackForm?.controls['star'].setValue(data[0].star);
       this.feedbackForm?.controls['star'].updateValueAndValidity();
       this.feedbackForm?.controls['comment'].setValue(data[0].comment);
       this.feedbackForm?.controls['comment'].updateValueAndValidity();
+    } else {
+      // Handle case when data is empty
+      console.log('No feedback data retrieved.');
+      this.feedbackForm?.reset();
+      // You may want to clear form fields or handle this case accordingly
+    }
   })
 }
     }
