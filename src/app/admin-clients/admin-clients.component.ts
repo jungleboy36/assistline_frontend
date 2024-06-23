@@ -25,7 +25,7 @@ export class AdminClientsComponent implements OnInit {
       // If clients are found in localStorage, parse and set them
       this.clients = JSON.parse(cachedClients);
       this.loading = false;
-    } else {
+    } 
       // If not, make the API call
       this.adminService.getClients().subscribe({
         next: (response) => {
@@ -39,7 +39,7 @@ export class AdminClientsComponent implements OnInit {
           this.loading = false;
         }
       });
-    }
+    
   }
   
 
@@ -54,7 +54,16 @@ export class AdminClientsComponent implements OnInit {
             response => {
                 client.enabled = newStatus;
                 this.selectedUser = ''; 
-                this.loadClients();
+                const clientIndex = this.clients.findIndex(c => c.uid === client.uid);
+
+                if (clientIndex !== -1) {
+                  // Update the companies array
+                  this.clients[clientIndex].enabled = newStatus;
+        
+                  // Update the local storage with the modified companies array
+                  localStorage.setItem('clients', JSON.stringify(this.clients));
+                }  
+                //this.loadClients();
                 // Update local state based on the response
                 /* Swal.fire({
                     icon: 'success',

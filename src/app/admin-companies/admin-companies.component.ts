@@ -25,7 +25,7 @@ export class AdminCompaniesComponent {
       // If companies are found in localStorage, parse and set them
       this.companies = JSON.parse(cachedCompanies);
       this.loading = false;
-    } else {
+    } 
       // If not, make the API call
       this.adminService.getCompanies().subscribe(
         response => {
@@ -44,7 +44,7 @@ export class AdminCompaniesComponent {
           this.loading = false;
         }
       );
-    }
+    
   }
   
 
@@ -57,7 +57,15 @@ export class AdminCompaniesComponent {
             response => {
                 company.enabled = newStatus;
                 this.selectedUser= '';
-                this.loadCompanies();                // Update local state based on the response
+                const companyIndex = this.companies.findIndex(c => c.uid === company.uid);
+
+                if (companyIndex !== -1) {
+                  // Update the companies array
+                  this.companies[companyIndex].enabled = newStatus;
+        
+                  // Update the local storage with the modified companies array
+                  localStorage.setItem('companies', JSON.stringify(this.companies));
+                }               // Update local state based on the response
                 /* Swal.fire({
                     icon: 'success',
                     title: 'Mise à jour réussie',
