@@ -17,6 +17,7 @@ export class DashboardAdminComponent {
     demandes: 0,
     conversations: 0,
     new_users: 0,
+    reports : 0,
   };
   public paymentChartOptions: any;
   public clientCompanyChartOptions: any;
@@ -32,6 +33,7 @@ export class DashboardAdminComponent {
       this.documentCount.demandes = data.demandes_count;
       this.documentCount.conversations = data.conversations_count;
       this.documentCount.new_users = data.new_users;
+      this.documentCount.reports  = data.reports;
       this.payments = data.payments;
 
       const monthlyTotals = this.calculateMonthlyTotals(this.payments);
