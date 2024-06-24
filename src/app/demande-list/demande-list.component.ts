@@ -180,7 +180,9 @@ maxBudget: number | null = null;
     if (cachedDemandes) {
       this.demandes = JSON.parse(cachedDemandes);
       this.filteredDemandes = [...this.demandes];
-      this.loading = false;}
+      this.loading = false;
+      this.applyFilter();
+    }
       
     if (this.role == 'company')
     this.demandeService.getDemandes().subscribe(
@@ -233,6 +235,7 @@ maxBudget: number | null = null;
     this.demandeService.deleteDemande(id).subscribe(
       () => {
         this.loadDemandes();
+        this.applyFilter();
       },
       (error) => {
         console.error('Error deleting offer:', error);

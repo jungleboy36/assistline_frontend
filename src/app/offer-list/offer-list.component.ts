@@ -386,8 +386,10 @@ export class OfferListComponent implements OnInit, AfterViewInit {
         this.offers = JSON.parse(localStorage.getItem('cachedOffers')!);
         this.filteredOffers = [...this.offers];
         this.loading = false;
-      
+      this.applyFilter();
+      this.applySmartSearch(this.departSearch,this.destinationSearch);
       },
+      
       (error) => {
         this.errorMessage = 'Error fetching offers: ' + error.message;
         this.loading = false;
