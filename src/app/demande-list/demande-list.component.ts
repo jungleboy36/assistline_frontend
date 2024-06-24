@@ -130,6 +130,12 @@ maxBudget: number | null = null;
           suggestionItem.addEventListener('click', () => {
             inputElement.value = result.name;
             suggestionsElement.innerHTML = '';
+            if (inputElement.id === 'origin') {
+              this.newDemande.depart = result.name;
+              }
+              if (inputElement.id === 'destination') {
+                this.newDemande.destination = result.name;
+                }
            
           });
           suggestionsElement.appendChild(suggestionItem);

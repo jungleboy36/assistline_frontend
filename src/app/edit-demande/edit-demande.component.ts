@@ -54,7 +54,13 @@ export class EditDemandeComponent {
           suggestionItem.addEventListener('click', () => {
             inputElement.value = result.name;
             suggestionsElement.innerHTML = '';
-           
+            if (inputElement.id === 'origin') {
+            this.demande.depart = result.name;
+            }
+            if (inputElement.id === 'destination') {
+              this.demande.destination = result.name;
+              }
+             
           });
           suggestionsElement.appendChild(suggestionItem);
         
@@ -87,6 +93,7 @@ export class EditDemandeComponent {
   updateDemande() {
     this.isAdding  = true;
     const demandeId = this.route.snapshot.paramMap.get('id');
+    this.demande.date = JSON.stringify(this.demande.date);
     this.demandeService.updateDemande(demandeId!, this.demande).subscribe(
       (response) => {
         console.log('Demande updated successfully:', response);
