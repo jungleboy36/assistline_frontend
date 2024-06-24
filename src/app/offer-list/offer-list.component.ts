@@ -193,10 +193,11 @@ export class OfferListComponent implements OnInit, AfterViewInit {
               if (this.originPin) {
 
                 this.map.removeLayer(this.originPin);
-     
+               
               }
               this.originPin = L.marker(result.center,{draggable : true,icon:this.customIcon}).addTo(this.map);
-
+              this.offerForm.controls['origin'].setValue(result.name);
+              this.offerForm.controls['origin'].updateValueAndValidity();
               this.originPin.on('dragend', () => {
                 this.reverseGeocode(this.originPin!.getLatLng(), originInput);
                 this.updateRoute();
@@ -207,9 +208,11 @@ export class OfferListComponent implements OnInit, AfterViewInit {
               if (this.destinationPin) {
       
                 this.map.removeLayer(this.destinationPin);
-
+               
               }
               this.destinationPin = L.marker(result.center ,{draggable : true,icon:this.customIcon}).addTo(this.map);
+              this.offerForm.controls['destination'].setValue(result.name);
+              this.offerForm.controls['destination'].updateValueAndValidity();
               this.destinationPin.on('dragend', () => {
                 this.reverseGeocode(this.destinationPin!.getLatLng(), destinationInput);
                 this.updateRoute();

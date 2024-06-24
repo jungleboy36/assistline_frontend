@@ -182,12 +182,12 @@
                                     <tbody>
                                         
                                         <tr *ngFor="let payment of payments">
+                                            <ng-container *ngIf="payment.paid">
                                             <td class="name"><img [src]="payment.company_image" alt="image"> {{payment.company_name}}</td>
                                             <td>{{payment.time | date: 'dd MMM yyyy'}}</td>
                                             <td>{{payment.amount}}€</td>
                                             <td><span class="badge badge-primary" *ngIf="payment.paid">Reçu</span></td>
-                                            <td><span class="badge badge-primary" *ngIf="!payment.paid">En attente</span></td>
-
+                                        </ng-container>
                                         </tr>
                                     
                                        <!-- <tr>
