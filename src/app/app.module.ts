@@ -33,6 +33,7 @@ import { ListOffersVisitorComponent } from './list-offers-visitor/list-offers-vi
 import { AvisComponent } from './avis/avis.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
+import { FranceMapComponent } from './france-map/france-map.component';
 const firebaseConfig = environment.firebaseConfig;
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ const firebaseConfig = environment.firebaseConfig;
     AvisComponent,
     ResetPasswordComponent,
     DashboardAdminComponent,
+    FranceMapComponent,
    
     
     

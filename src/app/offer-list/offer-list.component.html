@@ -11,6 +11,15 @@
         .leaflet-control-container .leaflet-routing-container-hide .leaflet-bottom .leaflet-right .leaflet-routing-container{
             display: none;
         }
+        @media screen and (min-width:1024px) {
+            .modal-content{
+                width:80%;
+                justify-self:center;
+            }
+
+           
+            }
+        
     </style>
  
     
@@ -30,19 +39,20 @@
         
         <!-- Offer modal -->
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" style="width: 165px;" data-toggle="modal" data-target="#basicModal" *ngIf="isCompany()" (click)="mapModal()">
-            + Ajouter
+        <button type="button" class="btn btn-primary" style="width:50px;" data-toggle="modal" data-target="#basicModal" *ngIf="isCompany()" (click)="mapModal()">
+            + 
         </button>
             
-        <div style="width:200px; margin-left:1000px;margin-top:-50px">
+        <div style="display:grid">
+        <div style="width:30%;margin-top:-40px;justify-self:end;">
            
-              <button type="button" class="btn btn-secondary" style="width:200px;" data-toggle="modal" data-target="#filterModal"  ><i class="bx bx-slider-alt" style="margin-right: 5px; margin-top:5px"></i>Filtrer</button> <br>
+              <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#filterModal"  ><i class="bx bx-slider-alt" style="margin-right: 5px; margin-top:5px;justify-self:end;"></i>Filtrer</button> <br>
            <!-- <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" *ngIf="! isCompany() " style="margin-top:40px" >-->
             <input type="text" class="form-control inline-block" style="margin-top: 10px;" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()"  id="searchQuery" >
 
               
         </div>
-
+    </div>
 <!--Filter modal-->
 <div class="modal fade" id="filterModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" style="width:350px;">
@@ -94,7 +104,7 @@
 
         <!-- Modal -->
         <div class="modal fade basicModalXL" id="basicModal" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document" style="width: 1000px;margin-left:350px">
+            <div class="modal-dialog modal-xl" role="document" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Ajouter offre</h5>

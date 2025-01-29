@@ -1,7 +1,7 @@
 import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { interval, switchMap } from 'rxjs';
+import { interval } from 'rxjs';
 import { PresenceService } from '../services/presence.service';
 import Pusher from 'pusher-js';
 import Swal from 'sweetalert2';

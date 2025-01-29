@@ -52,9 +52,9 @@ import { environment } from 'src/environments/environment';
 
               // Proceed with normal login flow
               console.log('Login successful');
-              const userId = user.uid;
+              const userId = user!.uid;
               // Set the user ID in local storage
-              this.updateUserOnlineStatus(userId, true);
+              this.updateUserOnlineStatus(userId!, true);
 
               localStorage.setItem('userId', userId);
               localStorage.setItem('display_name', user.displayName!);
@@ -212,7 +212,7 @@ import { environment } from 'src/environments/environment';
     }
 
     // Fetch the user's role from Firestore
-    return this.http.get<any>(`${this.apiUrl}/get-role/${token}`).pipe(
+    return this.http.get<any>(`${this.apiUrl}get-role/${token}/`).pipe(
       catchError(error => {
         console.error('Error fetching role:', error);
         return of({ error: 'Failed to fetch role' }); // Return an observable with an error object

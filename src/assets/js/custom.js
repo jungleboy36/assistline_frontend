@@ -1,7 +1,6 @@
 (function($){
 	"use strict";
-	jQuery(document).on('ready', function () {
-
+	window.initializeSidebar = function () {
 		// Header Sticky
 		$(window).on('scroll',function() {
             if ($(this).scrollTop() > 30){  
@@ -361,5 +360,5 @@
 			}]
 		});
 
-	});
+	}
 }(jQuery));

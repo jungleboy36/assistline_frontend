@@ -382,7 +382,7 @@ export class OfferListComponent implements OnInit, AfterViewInit {
           offer.depart_date = JSON.parse(offer.depart_date);
           offer.arrival_date = JSON.parse(offer.arrival_date);
         });
-        localStorage.setItem('cachedOffers', JSON.stringify(this.offers));
+        //localStorage.setItem('cachedOffers', JSON.stringify(this.offers));
         this.offers = JSON.parse(localStorage.getItem('cachedOffers')!);
         this.filteredOffers = [...this.offers];
         this.loading = false;

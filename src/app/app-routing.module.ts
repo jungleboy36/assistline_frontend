@@ -23,6 +23,7 @@ import { ListOffersVisitorComponent } from './list-offers-visitor/list-offers-vi
 import { AvisComponent } from './avis/avis.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
+import { FranceMapComponent } from './france-map/france-map.component';
 const routes: Routes = [
 
 {path:'offers',
@@ -32,6 +33,7 @@ children :[
 },
 
   {path:'demandes', component: DemandeListComponent , canActivate: [AuthGuard], data: { expectedRole: ['client','company'] }},
+  {path:'france-map', component: FranceMapComponent , canActivate: [AuthGuard], data: { expectedRole: ['client','company'] }},
   {path:'chat', component: ChatComponent, canActivate: [AuthGuard], data: { expectedRole: ['client','company'] }},
   {path:'edit-demande/:id',component:EditDemandeComponent, canActivate: [AuthGuard],data: { expectedRole: 'client' }},
   {path:'edit-offer/:id',component:EditOfferComponent, canActivate: [AuthGuard],data: { expectedRole: 'company' }},

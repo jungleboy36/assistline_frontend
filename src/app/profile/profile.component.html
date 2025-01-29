@@ -38,6 +38,18 @@
         .profile-rating .fa-star {
             margin-right: 3px; /* Adjust the value as needed */
         }
+
+        @media only screen and (max-width: 767px) {
+            .profile-header{
+                margin-top:-65px;
+            }
+
+        }
+        @media only screen and (min-width: 768px) {
+            .profile-header{
+                margin-top:100px;
+            }
+        }
     </style>
 </head>
 
@@ -50,14 +62,15 @@
         <section class="profile-area">
             
             <div class="profile-header mb-30">
-                <div class="user-profile-images" style="margin-top: 100px;">
+                <div class="user-profile-images" >
                     <!-- Cover Image -->
                     <!-- <img [src]="userProfile.coverImage" class="cover-image" alt="Cover image"> -->
                     
                     <!-- Profile Image -->
-                   
+                        <div class="cover-image"></div>
+
                     <div class="profile-image" *ngIf="userProfile.image">
-                        <img [src]="userProfile.image" class="rounded-circle" alt="Profile image">
+                        <img [src]="userProfile.image"  alt="Profile image">
                     </div>
                     
                     <div class="user-profile-text">

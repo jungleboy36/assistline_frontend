@@ -25,11 +25,9 @@
             ],
             "styles": [
               "src/assets/css/vendors.min.css",
+              "src/assets/css/bootstrap.min.css",
               "src/assets/css/style.css",
               "src/assets/css/responsive.css",              
-              "src/assets/css/responsive.scss",
-              "src/assets/css/bootstrap.min.css",
-              "src/assets/css/style.scss",
               "node_modules/leaflet/dist/leaflet.css",
               "src/app/offer-list/offer-list.component.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
@@ -59,7 +57,6 @@
               "src/assets/js/apexcharts/apex-custom-mixed-charts.js",
               "src/assets/js/apexcharts/apex-custom-radialbar-charts.js",
               "src/assets/js/apexcharts/apex-custom-radar-chart.js",
-              "src/assets/js/jvectormap-world-mill-en.js",
               "node_modules/leaflet/dist/leaflet.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
 
@@ -147,6 +144,8 @@
               "node_modules/font-awesome/css/font-awesome.min.css"
             ],
             "scripts": [
+              "src/assets/js/custom.js"
+
             ]
           }
         }

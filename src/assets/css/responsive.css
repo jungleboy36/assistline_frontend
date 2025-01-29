@@ -1,4 +1,4 @@
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 767px)  {
   body {
     font-size: 14px;
   }
@@ -10,11 +10,13 @@
     left: -100%;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
   }
   .sidemenu-area.active-sidemenu-area {
     left: 0;
     opacity: 1;
     visibility: visible;
+    pointer-events: all;
   }
   .top-navbar.navbar {
     position: fixed;
@@ -88,9 +90,9 @@
   }
   .main-content {
     min-height: 100vh;
-    padding-right: 15px;
-    padding-left: 15px;
-    padding-top: 65px;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
+    padding-top: 65px !important;
   }
   .main-content.hide-sidemenu-area {
     padding-left: 15px;
