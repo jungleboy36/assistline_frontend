@@ -14,9 +14,10 @@
               </div>
     
               <div class="form-group">
-                <input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="formData.email" required>
+                <input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="formData.email" required (mouseout)="checkEmail()">
                 <span class="label-title"><i class='bx bx-envelope'></i></span>
                 <div *ngIf="formData.email == '' || formData.email ==' '" class="text-danger">Ce champs est obligatoire.</div>
+                <div *ngIf="emailExists" style="justify-self: left !important;" class="text-danger"><i class="bi bi-x-circle" style="color: red;margin-right:5px;"></i>Un utilisateur avec cet email existe déjà.</div>
               </div>
     
               <div class="form-group">
@@ -31,20 +32,10 @@
                 <div *ngIf="formData.password !== formData.password2" class="text-danger">Les mots de passe ne correspondent pas.</div>
               </div>
     
-              <div class="form-group">
-                <h5>Vous êtes:</h5><br>
-                <label>
-                  <input class="form-check-input" id="r1" type="radio" name="role" value="client" [(ngModel)]="formData.role" > un client
-                </label>
-                <br><br>
-                <label>
-                  <input class="form-check-input" id="r1" type="radio" name="role" value="company" [(ngModel)]="formData.role"> une societé de déménagement
-                </label>
-              </div>
-              
-              <div class="form-group" *ngIf="formData.role === 'company'">
-                <h6><i class="bx bxs-cloud-upload"></i> Télécharger votre KBIS :</h6>
-                <input type="file" class="form-control" name="file" (change)="onFileChange($event)" required>
+            <br>
+              <div class="form-group" >
+                <h6><i class="bx bxs-cloud-upload"></i> Télécharger votre KBIS :</h6><br>
+                <input type="file" accept="application/pdf" class="form-control" name="file" (change)="onFileChange($event)" required>
               </div>
     
               <button type="submit" class="register-btn">S'inscrire</button>

@@ -434,10 +434,11 @@ setTimeout(() => {
     // Get the current selected regions from the observable
     this.selectedFilterRegion$.pipe(take(1)).subscribe(selectedRegions => {
       const selectedRegionIds = selectedRegions.map(region => region.id);
-  
+      if( this.filter.origin && this.filter.origin.length ==1) this.filter.origin = "0"+this.filter.origin;
+      if( this.filter.destination && this.filter.destination.length ==1) this.filter.destination = "0"+this.filter.destination;
       this.filteredOffers = this.offers.filter(offer => {
-        const matchOrigin = !this.filter.origin || offer.origin === this.filter.origin;
-        const matchDestination = !this.filter.destination || offer.destination === this.filter.destination;
+        let matchOrigin = !this.filter.origin || offer.origin === this.filter.origin || offer.route.includes(this.filter.origin);
+        let matchDestination = !this.filter.destination || offer.destination === this.filter.destination || offer.route.includes(this.filter.destination);
         const matchVolume = offer.volume >= this.volumeMin && offer.volume <= this.volumeMax;
         const matchPrice = offer.prix >= this.priceMin && offer.prix <= this.priceMax;
   
@@ -497,11 +498,11 @@ setTimeout(() => {
             matchDestinationDate = false;
           }
         }
-  
+     
         // Combine all filter conditions
         return matchVolume && matchPrice &&
                matchDepartDate && matchDestinationDate &&
-               (matchOrigin && matchDestination && matchRegion);
+               matchOrigin && matchDestination && matchRegion;
       });
   
       this.filterLoading = false;
@@ -725,5 +726,9 @@ updateRange(type: string) {
           this.priceMin = this.priceMax;
       }
   }
+}
+
+checkLength(c:string){
+  return c.length ==0 || c.length == 2;
 }
 }

@@ -304,4 +304,14 @@ import { environment } from 'src/environments/environment';
 
   }
 
+  checkEmail(email: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}check_email/${email}`); 
+  }
+
+  verifyOtp(otp: string,email:string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}verify-otp/`, { otp,email });
+  }
+  resendOtp(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}resend-otp/`, { email });
+  }
   }

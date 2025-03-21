@@ -1,0 +1,112 @@
+/* Overall page styling */
+.register-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+/* Centered form with a clean look */
+.register-form {
+    text-align: center;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Verification image adjustments */
+.verify-img {
+    width: 50%;
+    max-width: 150px;
+    margin: -60px auto -40px;
+    display: block;
+    padding-top:50px;
+}
+
+/* Error message styling */
+.error-message {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* OTP Inputs Container */
+.otp-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+/* OTP Input Fields */
+.otp-input {
+    width: 50px;
+    height: 55px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid #0078d4;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: #005fa3;
+    background-color: #eef7ff;
+    transform: scale(1.1);
+}
+
+/* Shake animation for incorrect OTP */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+.otp-container.shake .otp-input {
+    animation: shake 0.4s ease-in-out;
+    border-color: red !important;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    margin-top: -20px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 480px) {
+    .otp-container {
+        gap: 5px;
+    }
+
+    .otp-input {
+        width: 40px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .register-form {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .verify-img {
+        width: 40%;
+        max-width: 120px;
+        margin-top: -40px;
+    }
+
+    .register-form h2 {
+        font-size: 20px;
+    }
+
+    .error-message {
+        font-size: 12px;
+    }
+}
