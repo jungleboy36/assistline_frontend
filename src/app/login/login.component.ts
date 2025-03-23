@@ -31,41 +31,51 @@ export class LoginComponent {
     this.loadingSubscription.unsubscribe();
   }
   onSubmit(): void {
-    
     if (this.loginForm.valid && !this.loading) {
       this.loading = true;
       const { email, password } = this.loginForm.value;
+  
       this.authService.login(email, password).subscribe(
-        (res) => {
-          this.loading=false;
-          console.log('Login successful', res);
-          // Optionally store user info in a service or local storage
-          console.log('User role:', res.user.role);
-          if(!res.user.verified){
-            this.router.navigate(['/verify-email'], { queryParams: { email: res.user.email } });
+        async () => {
+          // ✅ Session-based login successful
+          try {
+            const session = await this.authService.checkSession().toPromise();
+            this.loading = false;
+  
+            console.log('Session:', session);
+  
+            if (!session.verified) {
+              this.router.navigate(['/verify-email'], { queryParams: { email: session.email } });
+              return;
+            }
+  
+            if (!session.enabled) {
+              this.verifyErrorMessage = "Votre compte est encore en cours de vérification, veuillez réessayer plus tard";
+              return;
+            }
+  
+            if (session.role === 'admin') {
+              this.router.navigate(['/admin/companies']);
+            } else if (session.role === 'user') {
+              this.router.navigate(['/offers']);
+            }
+  
+          } catch (sessionError) {
+            console.error("Session check failed after login", sessionError);
+            this.errorMessage = "Échec de récupération de session après connexion.";
           }
-          if(!res.user.enabled){
-          this.verifyErrorMessage = "Votre compte est encore en cours de vérification, veuillez réessayer plus tard"
-            return;
-          }
-          if(res.user.role === 'admin') {
-            this.router.navigate(['/admin/companies']);
-          } else if(res.user.role === 'user') {
-          this.router.navigate(['/offers']);}
         },
         (err) => {
-          this.loading=false;
+          this.loading = false;
           this.errorMessage = err.error?.error || "Une erreur est survenue.";
-          setTimeout(() => {
-          $('.alert').addClass('shake');
-          },100);
-          setTimeout(() => {
-            $('.alert').removeClass('shake');
-          }, 2000);
           console.error(err);
+  
+          // Shake animation
+          setTimeout(() => $('.alert').addClass('shake'), 100);
+          setTimeout(() => $('.alert').removeClass('shake'), 2000);
         }
       );
-        
     }
   }
+  
 }
