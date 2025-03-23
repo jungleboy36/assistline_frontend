@@ -550,13 +550,7 @@ setTimeout(() => {
       backdrop.parentNode!.removeChild(backdrop);    }
   }
 contacter(receiver_id : string,receiver_display_name:string) {
-  this.chatService.createConversation(receiver_id, this.authService.getUserId(),receiver_display_name,this.authService.getDisplayName()!).subscribe(
-    (data) => {
-      console.log('redirecting to chat....');
-      this.removeBackdrop();
-      this.router.navigate(['/chat']);
-    },
-  )
+
 }
 
 mapModal(){

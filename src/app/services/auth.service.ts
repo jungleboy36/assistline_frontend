@@ -27,7 +27,6 @@ import { environment } from 'src/environments/environment';
     errorMessage: any;
     constructor(private http: HttpClient, private router: Router,private auth: AngularFireAuth,private presence : PresenceService ) {
       // Load user info from local storage when the service is instantiated
-      this.loadUserInfo();
       //
       
     }
@@ -158,13 +157,8 @@ logout(): void {
       }
     } */
 
-  getUserId() : string {
-    this.getUser().subscribe(
-      data => {
-        return data.id.toString();
-      }
-    );
-    return '';
+  getUserId()  {
+  
   }
 
 

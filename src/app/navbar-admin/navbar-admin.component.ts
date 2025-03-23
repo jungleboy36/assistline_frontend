@@ -26,15 +26,6 @@ loadNotifications() {
 }
 
 markAllAsRead() {
-  const userId = this.authService.getUserId();
-  this.adminService.markAllNotificationsAsRead(userId).subscribe(
-    () => {
-      // After marking all notifications as read, reload the notifications
-      this.loadNotifications();
-    },
-    (error: any) => {
-      console.error('Error marking all notifications as read:', error);
-    }
-  );
+
 }
 }

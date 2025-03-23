@@ -49,7 +49,6 @@ export class ChatComponent implements OnInit,AfterViewInit {
    }
 
   ngOnInit(): void {
-    this.userId = this.authService.getUserId();
     (window as any).onPaymentSuccess = this.onPaymentSuccess.bind(this);
     (window as any).onCancelPayment = this.cancelPayment.bind(this);
     (window as any).openModal = this.openModal.bind(this);
@@ -66,7 +65,6 @@ export class ChatComponent implements OnInit,AfterViewInit {
     this.profilePicture =localStorage.getItem('profileImageUrl');
     //this.fetchDataEveryFiveSeconds();
     //this.conversations = this.conversationsUpdate;
-    this.messagesChannel = pusher.subscribe(this.authService.getUserId());
     this.messagesChannel.bind('new-message', (data:any) => {
       const conversation_id = data.conversation_id;
       this.conversations.forEach(conversation =>{
@@ -277,21 +275,6 @@ if (contentWrappers.length >= 3) {
       return false;}
     
 saveAutoMessage(){
-  this.chatService.saveAutoMessage(this.authService.getUserId(),this.autoMessage).subscribe(
-    (response) => {
-      this.clickCancelButton()
-console.log("auto message saved");
-Swal.fire({
-  icon: 'success',
-  title: 'Message automatique sauvegardé !',
-  showConfirmButton: false,
-  timer: 800,
-});
-    },
-    (error) => {
-      console.error('Error adding auto message:', error);
-    }
-  );
 
 
 }
@@ -526,32 +509,7 @@ saveFeedback(feedbackForm: NgForm): void {
 }
 
 retrieve_feedbackk(){
-  this.chatService.retrieve_feedback(this.authService.getUserId(),this.getSenderId(this.selectedConversation)!).subscribe((data)=>{
-    console.log('feedback data: ',data[0]);
-    if (data && data.length > 0) {
-      console.log('feedback data: ', data[0]);
-      const feedbackComment = document.querySelector('textarea[name="comment"]') as HTMLInputElement;
-      feedbackComment.value = data[0].comment;
-      this.feedback_id = data[0].id;
-      this.selectedConversation.feedback_id = data[0].id;
-      this.flagged = data[0].flagged;
-
-      const starRadio = document.querySelector(`input[name="star"][value="${data[0].star}"]`) as HTMLInputElement;
-      if (starRadio) {
-        starRadio.checked = true;
-      }
-
-      this.feedbackForm?.controls['star'].setValue(data[0].star);
-      this.feedbackForm?.controls['star'].updateValueAndValidity();
-      this.feedbackForm?.controls['comment'].setValue(data[0].comment);
-      this.feedbackForm?.controls['comment'].updateValueAndValidity();
-    } else {
-      // Handle case when data is empty
-      console.log('No feedback data retrieved.');
-      this.feedbackForm?.reset();
-      // You may want to clear form fields or handle this case accordingly
-    }
-  })
+ 
 }
     }
     

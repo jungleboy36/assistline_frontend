@@ -175,52 +175,7 @@ maxBudget: number | null = null;
 
 
   loadDemandes() {
-    const cachedDemandes = localStorage.getItem('cachedDemandes');
-    if (cachedDemandes) {
-      this.demandes = JSON.parse(cachedDemandes);
-      this.filteredDemandes = [...this.demandes];
-      this.loading = false;
-      this.applyFilter();
-    }
-      
-    if (this.role == 'company')
-    this.demandeService.getDemandes().subscribe(
-      (demandes: any[]) => {
-        this.demandes = demandes.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
-        this.demandes.forEach(demande =>{
-          demande.date = JSON.parse(demande.date);
-        });
-        this.filteredDemandes = [...this.demandes];
-        localStorage.setItem('cachedDemandes', JSON.stringify(this.demandes));
-        this.loading = false ;
-        this.applyFilter();
-
-      },
-      (error) => {
-        this.errorMessage = 'Error fetching offers: ' + error.message;
-        this.loading = false ;
-
-      }
-    );
-    else if (this.role == 'client')
-    this.demandeService.getDemandesById(this.authService.getUserId()).subscribe(
-      (demandes: any[]) => {
-        this.demandes = demandes.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
-        this.demandes.forEach(demande =>{
-          demande.date = JSON.parse(demande.date);
-        });
-        this.filteredDemandes = [...this.demandes];
-        localStorage.setItem('cachedDemandes', JSON.stringify(this.demandes));
-        this.loading = false ;
-        this.applyFilter();
-
-      },
-      (error) => {
-        this.errorMessage = 'Error fetching offers: ' + error.message;
-        this.loading = false ;
-
-      }
-    );
+   
   }
 
 
@@ -300,40 +255,7 @@ maxBudget: number | null = null;
 
 
   refresh() {
-    this.loading = true;
-    this.filteredDemandes = [ ]
-    if (this.role == 'company')
-    this.demandeService.getDemandes().subscribe(
-      (demandes: any[]) => {
-        this.demandes = demandes.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
-        this.filteredDemandes = [...this.demandes];
-        localStorage.setItem('cachedDemandes', JSON.stringify(this.demandes));
-        this.loading = false ;
-        this.applyFilter();
-
-      },
-      (error) => {
-        this.errorMessage = 'Error fetching offers: ' + error.message;
-        this.loading = false ;
-
-      }
-    );
-    else if (this.role == 'client')
-    this.demandeService.getDemandesById(this.authService.getUserId()).subscribe(
-      (demandes: any[]) => {
-        this.demandes = demandes.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
-        this.filteredDemandes = [...this.demandes];
-        localStorage.setItem('cachedDemandes', JSON.stringify(this.demandes));
-        this.loading = false ;
-        this.applyFilter();
-
-      },
-      (error) => {
-        this.errorMessage = 'Error fetching offers: ' + error.message;
-        this.loading = false ;
-
-      }
-    );
+  
   }
 
   removeBackdrop(): void {
@@ -342,13 +264,7 @@ maxBudget: number | null = null;
       backdrop.parentNode!.removeChild(backdrop);    }
   }
 contacter(receiver_id : string,receiver_display_name:string) {
-  this.chatService.createConversation(receiver_id, this.authService.getUserId(),receiver_display_name,this.authService.getDisplayName()!).subscribe(
-    (data) => {
-      console.log('redirecting to chat....');
-      this.removeBackdrop();
-      this.router.navigate(['/chat']);
-    },
-  )
+
 }
 
 applyFilter() {

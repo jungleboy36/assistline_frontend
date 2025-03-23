@@ -18,15 +18,6 @@ export class AppComponent {
   }
 
   updateUserStatus(status: boolean) {
-    const userId = this.authService.getUserId();
-    // Send a request to your backend to update the user's status
-    this.presenceService.updateUserPresence(status,userId, ).subscribe(
-      () => {
-        console.log('User status updated successfully.');
-      },
-      (error) => {
-        console.error('Error updating user status:', error);
-      }
-    );
+ 
   }
 }

@@ -11,13 +11,15 @@ import Swal from 'sweetalert2';
 export class TokenInterceptor implements HttpInterceptor {
 
   // URLs that should be excluded from having JWT included
-  private excludedUrls: string[] = ['/home','/verify-email','reset-password',]; // Add more URLs as needed
+  private excludedUrls: string[] = ['login']; // Add more URLs as needed
 
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Check if the request URL matches any of the excluded URLs
     const isExcluded = this.excludedUrls.some(url => request.url.includes(url));
+    console.log('Intercepting:', request.url, '| Excluded:', isExcluded);
+
     if (isExcluded) {
       return next.handle(request);
     }
