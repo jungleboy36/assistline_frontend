@@ -8,9 +8,9 @@
     <link rel="icon" type="image/png" src="../../assets/img/favicon.png">
 
     <style>
-        .leaflet-control-container .leaflet-routing-container-hide .leaflet-bottom .leaflet-right .leaflet-routing-container{
-            display: none;
-        }
+        .w-40 {
+            width: 40% !important;
+          }
         @media screen and (min-width:1200px ) and (max-width: 1300px){
             .modal-content{
                 width:90%;
@@ -77,7 +77,7 @@
         <app-navbar></app-navbar>
 
         <br>
-        <h2>Offres</h2>
+        <h2>Lots</h2>
    
        <!-- <button type="button" (click)="refresh()" class="btn btn-primary" style="width: 50px;height:30px;margin-bottom:10px">
            <i class="bx bx-revision"></i>
@@ -93,171 +93,398 @@
               <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#filterModal" style="justify-content: right;margin-right:15px;" ><i class="bx bx-slider-alt" style="margin-right: 5px; margin-top:5px;justify-self:end;"></i>Filtrer</button> <br>
            <!-- <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" *ngIf="! isCompany() " style="margin-top:40px" >-->
             <!--<input type="text" class="form-control inline-block" style="margin-top: 10px;" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()"  id="searchQuery" >-->
-
+           
+              
               
         </div>
+        <div class="text-right"  data-toggle="tooltip"
+        title="Changer l'affichage (Table/Cartes)" style="justify-self:end;margin-right:15px;margin-top:5px;margin-bottom:-5px;">
+            <div class="toggle-switch-dark" (click)="toggleView()" [class.active]="!isTableView">
+              <div class="toggle-icon left" [class.selected]="isTableView">
+                <i class="bi bi-list-ul"></i>
+              </div>
+              <div class="toggle-icon right" [class.selected]="!isTableView">
+                <i class="bi bi-grid"></i>
+              </div>
+              <div class="slider"></div>
+            </div>
+          </div>
         <div style="justify-self:left;margin-top:-30px;">
             <label class="badge1" style="width:150px;" data-toggle="modal" data-target="#basicModal" (click)="mapModal()">
-                + ajouter une offre
+                + ajouter un lot
             </label>
         </div>
     </div>
 <!--Filter modal-->
-<div class="modal fade basicModalXL" id="filterModal" role="dialog" aria-hidden="true">
+<!-- FILTER MODAL -->
+<div class="modal fade" id="filterModal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title"><strong>Filtrer</strong></h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- 1) Offres -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="bg-light p-3 rounded shadow-sm">
+              <h6 class="text-primary font-weight-bold mb-3">Offres</h6>
+              <div class="form-group">
+                <select class="form-control w-75" [(ngModel)]="filter.all">
+                  <option value="all">Toutes les offres</option>
+                  <option value="mine">Mes offres</option>
+                </select>
+              </div>
+            </div>
+          
+        
+
+        <!-- 2) Coordonnées -->
+       
+          
+            <div class="bg-light p-3 rounded shadow-sm">
+              <h6 class="text-primary font-weight-bold mb-3">Coordonnées</h6>
+              <div class="form-group mb-3">
+                <label><i class="fas fa-location-arrow"></i> Départ</label>
+                <input type="text"
+                       class="form-control w-75"
+                       placeholder="Code postal de départ"
+                       [(ngModel)]="filter.origin"
+                       id="departSearch">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                <input type="text"
+                       class="form-control w-75"
+                       placeholder="Code postal de destination"
+                       [(ngModel)]="filter.destination"
+                       id="destinationSearch">
+              </div>
+            </div>
+          </div>
+      
+
+        <!-- 3) Volume / Prix sliders + Dates (right-side card) -->
+       
+          
+          <div class="col-md-6">
+            <div class="bg-light p-3 rounded shadow-sm">
+              
+              <!-- Volume -->
+              <h6 class="text-primary font-weight-bold mb-3">Volume (m³)</h6>
+              <div id="volume-slider"></div>
+              <p class="mt-2">Valeur : {{ volumeMin }} – {{ volumeMax }} m³</p>
+
+              <!-- Prix -->
+              <h6 class="text-primary font-weight-bold mb-3 mt-4">Prix (€)</h6>
+              <div id="price-slider"></div>
+              <p class="mt-2">Valeur : {{ priceMin }} – {{ priceMax }} €</p>
+
+              <!-- Dates -->
+              <h6 class="text-primary font-weight-bold mb-3 mt-4">Dates</h6>
+              <div class="form-group mb-3">
+                <label>Date départ entre</label>
+                <div class="d-flex gap-2">
+                  <input type="date" class="form-control w-40" id="departStartFilter">
+                  <input type="date" class="form-control w-40" id="departEndFilter">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Date arrivée entre</label>
+                <div class="d-flex gap-2">
+                  <input type="date" class="form-control w-40" id="destinationStartFilter">
+                  <input type="date" class="form-control w-40" id="destinationEndFilter">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 4) Carte -->
+        <div class="bg-light p-3 rounded shadow-sm mb-4 filter-map">
+          <label class="mb-2"><strong>• Sélectionnez la zone sur la carte :</strong></label>
+          <app-france-map></app-france-map>
+          <button type="button"
+                  class="btn btn-outline-info btn-sm mt-3"
+                  (click)="resetMap('.filter-map')">
+            Réinitialiser la carte
+          </button>
+        </div>
+
+      </div> <!-- /.modal-body -->
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal">
+          Annuler
+        </button>
+        <button type="button"
+                class="btn btn-secondary"
+                (click)="resetForm()">
+          Réinitialiser
+        </button>
+        <button type="button"
+                class="btn btn-primary"
+                (click)="applyFilter()">
+          <div class="spinner-border text-light"
+               *ngIf="filterLoading"
+               style="width:15px; height:15px; margin-right:3px"
+               role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <i class="bx bx-search-alt-2 mr-2" *ngIf="!filterLoading"></i>
+          Rechercher
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  
+        <!-- Modal -->
+<div class="modal fade" id="basicModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
+  
+        <!-- Modal Header -->
         <div class="modal-header">
-          <h5 class="modal-title">Filtrer</h5>
-          <button type="button" class="close" data-dismiss="modal">
+          <h5 class="modal-title"><strong>Ajouter un lot</strong></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #addOfferModal>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <div>
-            <select class="form-control" [(ngModel)]="filter.all" style="width: 200px;">
-              <option value="all">Toutes les offres</option>
-              <option value="mine">Mes offres</option>
-
-            </select>
-            <div class="row" style="margin-top:20px;margin-bottom:30px;">
-               
-              <div class="col">
-                <label style="margin-left:7px;"><h6><b>Départ:</b></h6></label>
-                <input type="text" style="width: 200px;" class="form-control inline-block" placeholder="Code postal de départ"
-                  [(ngModel)]="filter.origin" id="departSearch">
-              </div>
-              <div class="col">
-                <label style="margin-left:7px;"><h6><b>Destination:</b></h6></label>
-                <input type="text" class="form-control inline-block" style="width: 200px;" placeholder="Code postal de destination"
-                  [(ngModel)]="filter.destination" id="destinationSearch">
-              </div>
-              <div class="col"></div>
-              <div class="col"></div>
-              <div class="col"></div>
-
-            </div>
   
-            <div class="row">
-              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-7">
-                <!-- Dual Range Slider for Volume -->
-                <label style="margin-top: 10px; margin-left:7px; margin-bottom:-2px">
-                  <h6><b>• Volume (m³):</b></h6>
-                </label>
-                <div id="volume-slider" style="margin: 20px 7px;"></div>
-                <p>Valeur: {{ volumeMin }} - {{ volumeMax }} m³</p>
+        <!-- Form -->
+        <form (ngSubmit)="addOffer()" [formGroup]="offerForm">
+            <div class="modal-body"> 
+
+                <!-- Basic Info Section -->
+                <!-- Volume & Price + Type & Reference -->
+                <div class="row mb-4">
+                  <!-- Volume & Price -->
+                  
+                  <div class="col-md-6">
+                    <div class="bg-light p-3 rounded shadow-sm h-100">
+                        <h6 class="text-primary font-weight-bold mb-3">Type & Référence</h6>
+                        <div class="form-group mb-3">
+                          <label for="type"><i class="fas fa-list"></i> Type</label>
+                          <select id="type" class="form-control w-75" formControlName="type_offre"
+                                  [(ngModel)]="newOffer.type_offre">
+                            <option *ngFor="let type of offerTypes" [value]="type.id">{{ type.name }}</option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label for="reference"><i class="fas fa-hashtag" style="margin-right: 5px;"></i>Référence Interne</label>
+                          <input type="text" id="reference" class="form-control w-75" formControlName="reference" placeholder="N° Devis, nom du client, etc."
+                                 [(ngModel)]="newOffer.reference">
+                        </div>
+                      </div>
+                  </div>
+                  <!-- Type & Reference -->
+                  <div class="col-md-6">
+                    <div class="bg-light p-3 rounded shadow-sm h-100">
+                      <h6 class="text-primary font-weight-bold mb-3">Dates</h6>
+              
+                      <!-- Date départ entre -->
+                      <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Date départ entre</label>
+                        <div class="d-flex flex-row gap-2 flex-wrap">
+                          <input type="date" class="form-control w-40 mr-2" formControlName="depart_date_start"
+                                 id="departStartDate" [value]="minEndDate1 | date:'yyyy-MM-dd'" (change)="updateMinDate1()">
+                          <input type="date" class="form-control w-40" formControlName="depart_date_end"
+                                 id="departEndDate" [attr.min]="minEndDate1 | date:'yyyy-MM-dd'" (change)="updateMinDate3()">
+                        </div>
+                      </div>
+              
+                      <!-- Date arrivée entre -->
+                      <div class="form-group">
+                        <label><i class="fas fa-calendar-check"></i> Date arrivée entre</label>
+                        <div class="d-flex flex-row gap-2 flex-wrap">
+                          <input type="date" class="form-control w-40 mr-2" formControlName="arrival_date_start"
+                                 id="destinationStartDate" [attr.min]="minEndDate3 | date:'yyyy-MM-dd'"
+                                 [value]="minEndDate3 | date:'yyyy-MM-dd'" (change)="updateMinDate2()">
+                          <input type="date" class="form-control w-40" formControlName="arrival_date_end"
+                                 [(ngModel)]="destinationEndDate" [attr.min]="minEndDate2 | date:'yyyy-MM-dd'">
+                        </div>
+                      </div>
+              
+                    </div>
+                  </div>
+                </div>
+              
+  <!-- Coordonnées & Dates -->
+  <div class="row mb-4">
+    <!-- Coordonnées -->
+    <div class="col-md-6">
+      <div class="bg-light p-3 rounded shadow-sm h-100">
+        <h6 class="text-primary font-weight-bold mb-3">Coordonnées</h6>
+        <div class="form-group mb-3">
+          <label for="origin"><i class="fas fa-location-arrow"></i> Départ</label>
+          <input type="text" id="origin" class="form-control w-75" formControlName="origin"
+                 [(ngModel)]="newOffer.origin" placeholder="les deux derniers chiffres du code postal" maxlength="2"
+                 pattern="[0-9]{1,2}" (keypress)="validateNumber($event)" required>
+        </div>
+        <div class="form-group">
+          <label for="destination"><i class="fas fa-map-marker-alt"></i> Destination</label>
+          <input type="text" id="destination" class="form-control w-75" formControlName="destination"
+                 [(ngModel)]="newOffer.destination" placeholder="les deux derniers chiffres du code postal" maxlength="2"
+                 pattern="[0-9]{1,2}" (keypress)="validateNumber($event)" required>
+        </div>
+      </div>
+    </div>
   
-                <!-- Dual Range Slider for Price -->
-                <label style="margin-top: 10px; margin-left:7px; margin-bottom:-2px">
-                  <h6><b>• Prix (€):</b></h6>
-                </label>
-                <div id="price-slider" style="margin: 20px 7px;"></div>
-                <p>Valeur: {{ priceMin }} - {{ priceMax }} €</p>
+  <!-- Dates -->
+  <div class="col-md-6">
+    <div class="bg-light p-3 rounded shadow-sm h-100">
+      <h6 class="text-primary font-weight-bold mb-3">Volume & Prix</h6>
+      <div class="form-group mb-3">
+        <label for="volume"><i class="fas fa-box"></i> Volume (m³)</label>
+        <input type="number" id="volume" class="form-control w-75" formControlName="volume"
+               [(ngModel)]="newOffer.volume" placeholder="0" required>
+      </div>
+      <div class="form-group" *ngIf="offerForm.get('type_offre')!.value != 6">
+        <label for="prix"><i class="fas fa-euro-sign"></i> Prix (€)</label>
+        <input type="number" id="prix" class="form-control w-75"  formControlName="prix"
+               [(ngModel)]="newOffer.prix" placeholder="0" required>
+      </div>
+    </div>
+  </div>
+</div>
+                <!-- Coordonnées & Type -->
+                <div class="row mb-4" [hidden]="offerForm.get('type_offre')!.value != 4">
+                  <div class="col-md-6">
+                    <div class="bg-light p-3 rounded shadow-sm h-100">
+                      <h6 class="text-primary font-weight-bold mb-3">Informations Départ</h6>
+                      <div class="form-group">
+                        <label for="etage"><b>Étage</b></label>
+                        <select class="form-control" id="etage" name="etage" formControlName="depart_etage"
+                                [(ngModel)]="newOffer.depart_etage"
+                                required>
+                          <option value="" disabled selected>Sélectionnez un étage</option>
+                          <option value="RDC -2">Sous-sol 2 (RDC -2)</option>
+                          <option value="RDC -1">Sous-sol 1 (RDC -1)</option>
+                          <option value="RDC">Rez-de-chaussée (RDC)</option>
+                      
+                          <ng-container *ngFor="let n of floorNumbers; trackBy: trackByFloor">
+                            <option [value]="n">{{ n }}e étage</option>
+                          </ng-container>
+                        </select>
+                        <small class="form-text text-danger">
+                          
+                        </small>
+                      </div>
+                      <div class="form-group mb-2">
+                        <label><b>Passage</b></label><br>
+                        <div class="d-flex justify-content-between w-100">
+                          <label><input type="checkbox" [(ngModel)]="newOffer.direct_depart" formControlName="direct_depart"> Direct</label>
+                          <label><input type="checkbox" [(ngModel)]="newOffer.escalier_depart" formControlName="escalier_depart"> Escalier</label>
+                          <label><input type="checkbox" [(ngModel)]="newOffer.ascenseur_depart" formControlName="ascenseur_depart"> Ascenseur</label>
+                          <label><input type="checkbox" [(ngModel)]="newOffer.monte_meuble_depart" formControlName="monte_meuble_depart"> Monte-Meubles</label>
+                        </div>
+                      </div>
+                      <div class="form-group mb-2">
+                        <label><b>Prestation</b></label>
+                        <select class="form-control" [(ngModel)]="newOffer.depart_pres" formControlName="depart_pres">
+                          <option value="" disabled selected>Sélectionner...</option>
+                          <option value="eco">Économique</option>
+                          <option value="fragile">Éco + Meubles(Demontage)</option>
+                          <option value="fragile">Éco + Fragiles(Emballage)</option>
+                          <option value="std">Standard</option>
+                          <option value="luxe">Luxe</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+              
+                  <div class="col-md-6">
+                    <div class="bg-light p-3 rounded shadow-sm h-100">
+                      <h6 class="text-primary font-weight-bold mb-3">Informations Arrivée</h6>
+                      <div class="form-group">
+                        <label for="etage"><b>Étage</b></label>
+                        <select class="form-control" id="etage" name="etage" [(ngModel)]="newOffer.arrivee_etage"
+                          formControlName="arrivee_etage" required>
+                          <option value="" disabled selected hidden>Sélectionnez un étage</option>
+                          <option value="RDC -2">Sous-sol 2 (RDC -2)</option>
+                          <option value="RDC -1">Sous-sol 1 (RDC -1)</option>
+                          <option value="RDC">Rez-de-chaussée (RDC)</option>
+                      
+                          <ng-container *ngFor="let n of floorNumbers; trackBy: trackByFloor">
+                            <option [value]="n">{{ n }}e étage</option>
+                          </ng-container>
+                        </select>
+                        <small class="form-text text-danger">
+                      
+                        </small>
+                      </div>
+                      
+                      <div class="form-group mb-2">
+                        <label><b>Passage</b></label><br>
+                        <div class="d-flex justify-content-between w-100">
+                          <label><input type="checkbox"  [(ngModel)]="newOffer.direct_arrivee" formControlName="direct_arrivee" > Direct</label>
+                          <label><input type="checkbox" [(ngModel)]="newOffer.escalier_arrivee" formControlName="escalier_arrivee"> Escalier</label>
+                          <label><input type="checkbox" [(ngModel)]="newOffer.ascenseur_arrivee" formControlName="ascenseur_arrivee"> Ascenseur</label>
+                          <label><input type="checkbox" [(ngModel)]="newOffer.monte_meuble_arrivee" formControlName="monte_meuble_arrivee"> Monte-Meubles</label>
+                        </div>
+                      </div>
+                      <div class="form-group mb-2">
+                        <label><b>Prestation</b></label>
+                        <select class="form-control" formControlName="arrivee_pres" name="arrivee_pres" [(ngModel)]="newOffer.arrivee_pres">
+                          <option value="" selected disabled>Sélectionner...</option>
+                          <option value="eco">Économique</option>
+                          <option value="fragile">Éco + Meubles(Remontage)</option>
+                          <option value="fragile">Éco + Fragiles(Demballage)</option>
+                          <option value="std">Standard(Remontage + Deballage)</option>
+                          <option value="luxe">Luxe</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              
+                <!-- Autres Précisions -->
+                <div class="bg-light p-3 rounded shadow-sm mb-4">
+                  <h6 class="text-primary font-weight-bold mb-3">Autres Précisions</h6>
+                  <textarea class="form-control" rows="4" formControlName="commentaire" name="commentaire" [(ngModel)]="newOffer.commentaire" placeholder="Ajoutez des remarques ou besoins spécifiques..."></textarea>
+                </div>
+              
+                <!-- Map Section -->
+                <div class="p-3 shadow-sm rounded bg-light mb-3 add-map">
+                  <label class="mb-2"><strong>• Sélectionnez l'itinéraire sur la carte :</strong></label>
+                  <app-france-map modalType="add"></app-france-map>
+                  <button type="button" class="btn btn-outline-info btn-sm mt-3" (click)="resetMap('.add-map')">Réinitialiser la carte</button>
+                </div>
+              
               </div>
-              <div class="col">
-                <label style="margin-top: 10px; margin-left:7px; margin-bottom:-2px">
-                  <h6><b>Date départ entre:</b></h6>
-                </label><br>
-                <input type="date" class="form-control" id="departStartFilter" style="width: 150px; display:inline-block; margin-left:10px"
-                  >
-                -
-                <input type="date" class="form-control" id="departEndFilter" style="width: 150px; display:inline-block; margin-left:5px">
-                <br>
-                <label style="margin-top: 10px; margin-left:7px; margin-bottom:-2px">
-                  <h6><b>Date arrivé entre:</b></h6>
-                </label><br>
-                <input type="date" class="form-control" id="destinationStartFilter" style="width: 150px; display:inline-block; margin-left:10px"
-                 >
-                -
-                <input type="date" class="form-control" id="destinationEndFilter" style="width: 150px; display:inline-block; margin-left:5px">
+              
+  
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button type="button" #cancelButton (click)="resetAddForm()" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!offerForm.valid || isAdding">
+              <div class="spinner-border text-light" *ngIf="isAdding" style="width: 15px; height: 15px;" role="status">
+                <span class="sr-only">Loading...</span>
               </div>
-            </div>
-            <br>
+              Ajouter
+            </button>
           </div>
-          <div class="filter-map">
-          <app-france-map></app-france-map>
-        </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" #filterClose hidden>Close</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetForm()">Réinitialiser</button>
-          <button type="button" class="btn btn-primary"  (click)="applyFilter()">
-            <div class="spinner-border text-light" style="width:15px; height:15px; margin-right:3px" role="status" *ngIf="filterLoading" >
-              <span class="sr-only">Loading...</span>
-            </div>
-            <i class="bx bx-search-alt-2" style="margin-right: 3px;" *ngIf="!filterLoading"></i>Rechercher
-          </button>
-        </div>
+  
+        </form>
       </div>
     </div>
   </div>
   
-        <!-- Modal -->
-        <div class="modal fade basicModalXL" id="basicModal" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document" >
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><b>Ajouter une offre</b></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #addOfferModal>
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form (ngSubmit)="addOffer()" [formGroup]="offerForm">
-                    <div class="modal-body">
-                        <!-- Form for adding an offer -->
-                       <div class="row" style="box-shadow: 1px 5px 24px 0 rgb(68 102 242 / 18%);padding:20px">
-                        <div class="form-group col">
-                            <label for="volume" style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Volume (m3):</b></h6></label>
-                            <input type="number" id="volume" style="width: 200px;" formControlName="volume" [(ngModel)]="newOffer.volume" class="form-control"placeholder="0" required>
-                          </div>
-
-                          <div class="form-group col">
-                            <label for="prix" style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Prix (€):</b></h6></label>
-                            <input type="number" id="prix" class="form-control" formControlName="prix" [(ngModel)]="newOffer.prix" style="width: 200px;" placeholder="0" required>
-                          </div>
-                          </div>
-                        <div class="row" style="box-shadow: 1px 5px 24px 0 rgb(68 102 242 / 18%);padding:20px;">
-                            <div class="col form-group" style="justify-content: center;">
-                            <label for="origin"  style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Départ:</b></h6></label>
-                            <br>
-                            <input type="text" id="origin" class="form-control" [(ngModel)]="newOffer.origin" style="width: 200px;display:inline-block;margin-left:10px" formControlName="origin" name="origin" placeholder="Saisir le code postal" maxlength="2"  pattern="[0-9]{1,2}"  (keypress)="validateNumber($event)"  required>
-                            <!--<div class="invalid-feedback" style="display: block;margin-left:10px;">Saisir les deux derniers chiffres d'un code postal valide</div>-->
-
-                            <br>
-                          
-                            <label for="destination"  style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Destination:</b></h6></label><br>
-                            <input type="text" id="destination" class="form-control" [(ngModel)]="newOffer.destination " style="width: 200px;display:inline-block;margin-left:10px" formControlName="destination" name="destination" placeholder="Saisir le code postal"   maxlength="2" (keypress)="validateNumber($event)" pattern="[0-9]{1,2}" required>
-                        </div>
-                        <div class="col" style="justify-content: center;">
-                        <label style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>•Date départ entre:</b></h6></label><br>
-                            
-                        <input type="date" class="form-control" formControlName="depart_date_start" style="width: 130px;display:inline-block;margin-left:10px" id="departStartDate"  value="{{minEndDate1 | date:'yyyy-MM-dd'}}" (change)="updateMinDate1()"> - <input type="date" class="form-control" formControlName="depart_date_end"  [attr.min]="minEndDate1 | date:'yyyy-MM-dd'" id="departEndDate" (change)="updateMinDate3()" style="width: 130px; display:inline-block;margin-left:10px">
-       
-                     <br>
-                     <label style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>•Date arrivé entre:</b></h6></label><br>
-       
-                     <input type="date" class="form-control" formControlName="arrival_date_start" style="width: 130px;display:inline-block;margin-left:10px"   id="destinationStartDate" [attr.min]="minEndDate3 | date:'yyyy-MM-dd'" value="{{minEndDate3 | date:'yyyy-MM-dd'}}" (change)="updateMinDate2()"> - <input type="date" class="form-control" [(ngModel)]="destinationEndDate" formControlName="arrival_date_end" [attr.min]="minEndDate2 | date:'yyyy-MM-dd'" style="width: 130px; display:inline-block;margin-left:10px">
-                   
-                    </div>
-                  
-                </div>
-                           <div class="add-map">
-                            <app-france-map modalType="add"></app-france-map>
-                        </div>
-                            <button type="button" class="btn btn-info btn-sm"  (click)="resetMap('add-map')">réinitialiser la carte</button>                          
-
-                            <!-- Add more fields as needed -->
-                        
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" #cancelButton class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary" [disabled]="!offerForm.valid || isAdding" (click)="addOffer()"><div class="spinner-border text-light" style="width:15px;height:15px" role="status" *ngIf="isAdding" >
-                            <span class="sr-only">Loading...</span>
-                        </div> Ajouter</button>
-                    </div>
-                </form>
-                </div>
-            </div>
-        </div>
 
         <!-- Info Modal -->
         <div class="modal fade basicModalXL" id="infoModal" role="dialog" aria-hidden="true">
@@ -284,74 +511,274 @@
         </div>
         <!-- End Info Modal -->
 
-        <!--update offer modal-->
-        <div class="modal fade basicModalXL" id="updateModal" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document" >
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><b>Modifier l'offre</b></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #updateOfferModal>
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form  [formGroup]="offerForm">
-                    <div class="modal-body">
-                        <!-- Form for adding an offer -->
-                       <div class="row" style="box-shadow: 1px 5px 24px 0 rgb(68 102 242 / 18%);padding:20px">
-                        <div class="form-group col">
-                            <label for="volume" style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Volume (m3):</b></h6></label>
-                            <input type="number" id="volume2" style="width: 200px;" formControlName="volume" [(ngModel)]="updateOffer.volume" class="form-control"placeholder="0" required>
-                          </div>
+   <!-- update offer modal -->
+<div class="modal fade" id="updateModal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
 
-                          <div class="form-group col">
-                            <label for="prix" style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Prix (€):</b></h6></label>
-                            <input type="number" id="prix2" class="form-control" formControlName="prix" [(ngModel)]="updateOffer.prix" style="width: 200px;" placeholder="0" required>
-                          </div>
-                          </div>
-                        <div class="row" style="box-shadow: 1px 5px 24px 0 rgb(68 102 242 / 18%);padding:20px;">
-                            <div class="col form-group" style="justify-content: center;">
-                            <label for="origin"  style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Départ:</b></h6></label>
-                            <br>
-                            <input type="text" id="origin2" class="form-control" [(ngModel)]="updateOffer.origin" style="width: 200px;display:inline-block;margin-left:10px" formControlName="origin" name="origin" placeholder="Saisir le code postal" maxlength="2"  pattern="[0-9]{1,2}"  (keypress)="validateNumber($event)"  required>
-                            <!--<div class="invalid-feedback" style="display: block;margin-left:10px;">Saisir les deux derniers chiffres d'un code postal valide</div>-->
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title"><strong>Modifier le lot</strong></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #updateOfferModal>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
 
-                            <br>
-                          
-                            <label for="destination"  style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>• Destination:</b></h6></label><br>
-                            <input type="text" id="destination2" class="form-control" [(ngModel)]="updateOffer.destination " style="width: 200px;display:inline-block;margin-left:10px" formControlName="destination" name="destination" placeholder="Saisir le code postal"   maxlength="2" (keypress)="validateNumber($event)" pattern="[0-9]{1,2}" required>
-                        </div>
-                        <div class="col" style="justify-content: center;">
-                        <label style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>•Date départ entre:</b></h6></label><br>
-                            
-                        <input type="date" class="form-control" formControlName="depart_date" style="width: 130px;display:inline-block;margin-left:10px" id="departStartDate2"  value="{{minEndDate1 | date:'yyyy-MM-dd'}}" (change)="updateMinDate1()"> - <input type="date" class="form-control"  [attr.min]="minEndDate1 | date:'yyyy-MM-dd'" id="departEndDate2" (change)="updateMinDate3()" style="width: 130px; display:inline-block;margin-left:10px">
-       
-                     <br>
-                     <label style="margin-top: 10px;margin-left:7px ; margin-bottom:-2px"><h6><b>•Date arrivé entre:</b></h6></label><br>
-       
-                     <input type="date" class="form-control" formControlName="arrival_date" style="width: 130px;display:inline-block;margin-left:10px"   id="destinationStartDate2" [attr.min]="minEndDate3 | date:'yyyy-MM-dd'" value="{{minEndDate3 | date:'yyyy-MM-dd'}}" (change)="updateMinDate2()"> - <input type="date" class="form-control" [(ngModel)]="destinationEndDate" [attr.min]="minEndDate2 | date:'yyyy-MM-dd'" style="width: 130px; display:inline-block;margin-left:10px">
-                   
-                    </div>
-                  
+      <!-- Form -->
+      <form (ngSubmit)="updateOfferDetails()" [formGroup]="offerForm">
+        <div class="modal-body">
+
+          <!-- Type & Référence + Dates -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary font-weight-bold mb-3">Type & Référence</h6>
+                <div class="form-group mb-3">
+                  <label for="type2"><i class="fas fa-list"></i> Type</label>
+                  <select id="type2" class="form-control w-75"
+                          formControlName="type_offre"
+                          [(ngModel)]="updateOffer.type_offre">
+                    <option *ngFor="let type of offerTypes" [value]="type.id">{{ type.name }}</option>
+                  </select>
                 </div>
-                           <div class="update-map">
-                            <app-france-map [modalType]="'update'"></app-france-map>
-                        </div>
-                            <button type="button" class="btn btn-info btn-sm"  (click)="resetMap('update-map')">réinitialiser la carte</button>                          
-
-                            <!-- Add more fields as needed -->
-                        
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" #cancelButton class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary" [disabled]="!offerForm.valid || isUpdating" (click)="updateOfferDetails()"><div class="spinner-border text-light" style="width:15px;height:15px" role="status" *ngIf="isUpdating" >
-                            <span class="sr-only">Loading...</span>
-                        </div> Modifier</button>
-                    </div>
-                </form>
+                <div class="form-group">
+                  <label for="reference2"><i class="fas fa-hashtag"></i> Référence Interne</label>
+                  <input type="text" id="reference2" class="form-control w-75"
+                         formControlName="reference"
+                         placeholder="N° Devis, nom du client, etc."
+                         [(ngModel)]="updateOffer.reference">
                 </div>
+              </div>
             </div>
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary font-weight-bold mb-3">Dates</h6>
+                <div class="form-group">
+                  <label><i class="fas fa-calendar-alt"></i> Date départ entre</label>
+                  <div class="d-flex flex-row gap-2 flex-wrap">
+                    <input type="date" class="form-control w-40 mr-2"
+                           formControlName="depart_date_start"
+                           [value]="updateOffer.depart_date_start | date:'yyyy-MM-dd'"
+                           (change)="updateMinDate1()">
+                    <input type="date" class="form-control w-40"
+                           formControlName="depart_date_end"
+                           [attr.min]="minEndDate1 | date:'yyyy-MM-dd'"
+                           (change)="updateMinDate3()">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-calendar-check"></i> Date arrivée entre</label>
+                  <div class="d-flex flex-row gap-2 flex-wrap">
+                    <input type="date" class="form-control w-40 mr-2"
+                           formControlName="arrival_date_start"
+                           [value]="updateOffer.destination_date_start | date:'yyyy-MM-dd'"
+                           [attr.min]="minEndDate3 | date:'yyyy-MM-dd'"
+                           (change)="updateMinDate2()">
+                    <input type="date" class="form-control w-40"
+                           formControlName="arrival_date_end"
+                           [attr.min]="minEndDate2 | date:'yyyy-MM-dd'"
+                           [value]="updateOffer.destination_date_end | date:'yyyy-MM-dd'">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coordonnées & Volume/Prix -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary font-weight-bold mb-3">Coordonnées</h6>
+                <div class="form-group mb-3">
+                  <label for="origin2"><i class="fas fa-location-arrow"></i> Départ</label>
+                  <input type="text" id="origin2"
+                         class="form-control w-75"
+                         formControlName="origin"
+                         placeholder="les deux derniers chiffres du code postal"
+                         maxlength="2"
+                         pattern="[0-9]{1,2}"
+                         (keypress)="validateNumber($event)"
+                         [(ngModel)]="updateOffer.origin"
+                         required>
+                </div>
+                <div class="form-group">
+                  <label for="destination2"><i class="fas fa-map-marker-alt"></i> Destination</label>
+                  <input type="text" id="destination2"
+                         class="form-control w-75"
+                         formControlName="destination"
+                         placeholder="les deux derniers chiffres du code postal"
+                         maxlength="2"
+                         pattern="[0-9]{1,2}"
+                         (keypress)="validateNumber($event)"
+                         [(ngModel)]="updateOffer.destination"
+                         required>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary font-weight-bold mb-3">Volume & Prix</h6>
+                <div class="form-group mb-3">
+                  <label for="volume2"><i class="fas fa-box"></i> Volume (m³)</label>
+                  <input type="number" id="volume2"
+                         class="form-control w-75"
+                         formControlName="volume"
+                         placeholder="0"
+                         [(ngModel)]="updateOffer.volume"
+                         required>
+                </div>
+                <div class="form-group" *ngIf="offerForm.get('type_offre')!.value != 6">
+                  <label for="prix2"><i class="fas fa-euro-sign"></i> Prix (€)</label>
+                  <input type="number" id="prix2"
+                         class="form-control w-75"
+                         formControlName="prix"
+                         placeholder="0"
+                         [(ngModel)]="updateOffer.prix"
+                         required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sous-traitance fields -->
+           <!-- Coordonnées & Type -->
+           <div class="row mb-4" [hidden]="offerForm.get('type_offre')!.value != 4">
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary font-weight-bold mb-3">Informations Départ</h6>
+                <div class="form-group">
+                  <label for="etage"><b>Étage</b></label>
+                  <select class="form-control" id="etage" name="etage" formControlName="depart_etage"
+                          [(ngModel)]="newOffer.depart_etage"
+                          required>
+                    <option value="" disabled selected>Sélectionnez un étage</option>
+                    <option value="RDC -2">Sous-sol 2 (RDC -2)</option>
+                    <option value="RDC -1">Sous-sol 1 (RDC -1)</option>
+                    <option value="RDC">Rez-de-chaussée (RDC)</option>
+                
+                    <ng-container *ngFor="let n of floorNumbers; trackBy: trackByFloor">
+                      <option [value]="n">{{ n }}e étage</option>
+                    </ng-container>
+                  </select>
+                  <small class="form-text text-danger">
+                    
+                  </small>
+                </div>
+                <div class="form-group mb-2">
+                  <label><b>Passage</b></label><br>
+                  <div class="d-flex justify-content-between w-100">
+                    <label><input type="checkbox" [(ngModel)]="newOffer.direct_depart" formControlName="direct_depart"> Direct</label>
+                    <label><input type="checkbox" [(ngModel)]="newOffer.escalier_depart" formControlName="escalier_depart"> Escalier</label>
+                    <label><input type="checkbox" [(ngModel)]="newOffer.ascenseur_depart" formControlName="ascenseur_depart"> Ascenseur</label>
+                    <label><input type="checkbox" [(ngModel)]="newOffer.monte_meuble_depart" formControlName="monte_meuble_depart"> Monte-Meubles</label>
+                  </div>
+                </div>
+                <div class="form-group mb-2">
+                  <label><b>Prestation</b></label>
+                  <select class="form-control" [(ngModel)]="newOffer.depart_pres" formControlName="depart_pres">
+                    <option value="" disabled selected>Sélectionner...</option>
+                    <option value="eco">Économique</option>
+                    <option value="fragile">Éco + Meubles(Demontage)</option>
+                    <option value="fragile">Éco + Fragiles(Emballage)</option>
+                    <option value="std">Standard</option>
+                    <option value="luxe">Luxe</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+        
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary font-weight-bold mb-3">Informations Arrivée</h6>
+                <div class="form-group">
+                  <label for="etage"><b>Étage</b></label>
+                  <select class="form-control" id="etage" name="etage" [(ngModel)]="newOffer.arrivee_etage"
+                    formControlName="arrivee_etage" required>
+                    <option value="" disabled selected hidden>Sélectionnez un étage</option>
+                    <option value="RDC -2">Sous-sol 2 (RDC -2)</option>
+                    <option value="RDC -1">Sous-sol 1 (RDC -1)</option>
+                    <option value="RDC">Rez-de-chaussée (RDC)</option>
+                
+                    <ng-container *ngFor="let n of floorNumbers; trackBy: trackByFloor">
+                      <option [value]="n">{{ n }}e étage</option>
+                    </ng-container>
+                  </select>
+                  <small class="form-text text-danger">
+                
+                  </small>
+                </div>
+                
+                <div class="form-group mb-2">
+                  <label><b>Passage</b></label><br>
+                  <div class="d-flex justify-content-between w-100">
+                    <label><input type="checkbox"  [(ngModel)]="newOffer.direct_arrivee" formControlName="direct_arrivee" > Direct</label>
+                    <label><input type="checkbox" [(ngModel)]="newOffer.escalier_arrivee" formControlName="escalier_arrivee"> Escalier</label>
+                    <label><input type="checkbox" [(ngModel)]="newOffer.ascenseur_arrivee" formControlName="ascenseur_arrivee"> Ascenseur</label>
+                    <label><input type="checkbox" [(ngModel)]="newOffer.monte_meuble_arrivee" formControlName="monte_meuble_arrivee"> Monte-Meubles</label>
+                  </div>
+                </div>
+                <div class="form-group mb-2">
+                  <label><b>Prestation</b></label>
+                  <select class="form-control" formControlName="arrivee_pres" name="arrivee_pres" [(ngModel)]="newOffer.arrivee_pres">
+                    <option value="" selected disabled>Sélectionner...</option>
+                    <option value="eco">Économique</option>
+                    <option value="fragile">Éco + Meubles(Remontage)</option>
+                    <option value="fragile">Éco + Fragiles(Demballage)</option>
+                    <option value="std">Standard(Remontage + Deballage)</option>
+                    <option value="luxe">Luxe</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Autres Précisions -->
+          <div class="bg-light p-3 rounded shadow-sm mb-4">
+            <h6 class="text-primary font-weight-bold mb-3">Autres Précisions</h6>
+            <textarea class="form-control" rows="4"
+                      formControlName="commentaire"
+                      [(ngModel)]="updateOffer.commentaire"
+                      placeholder="Ajoutez des remarques ou besoins spécifiques..."></textarea>
+          </div>
+
+          <!-- Map -->
+          <div class="p-3 shadow-sm rounded bg-light mb-3 update-map">
+            <label class="mb-2"><strong>• Sélectionnez l'itinéraire sur la carte :</strong></label>
+            <app-france-map modalType="update"></app-france-map>
+            <button type="button"
+                    class="btn btn-outline-info btn-sm mt-3"
+                    (click)="resetMap('update-map')">
+              Réinitialiser la carte
+            </button>
+          </div>
+
         </div>
-        <!--End update offer modal-->
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button type="button"
+                  #updateCancelButton
+                  (click)="closeUpdateOfferModal()"
+                  class="btn btn-secondary"
+                  data-dismiss="modal">Annuler</button>
+          <button type="submit"
+                  class="btn btn-primary"
+                  [disabled]="!offerForm.valid || isUpdating">
+            <div class="spinner-border text-light"
+                 *ngIf="isUpdating"
+                 style="width:15px; height:15px;"
+                 role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            Modifier
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
 
 
 
@@ -364,7 +791,7 @@
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="!isTableView">
             <div class="col-lg-4 col-md-6 " *ngFor="let offer of filteredOffers  ">
                 <div class="card mb-30">
 
@@ -374,7 +801,9 @@
                             <img src="assets/img/moving.jpg" width="50" height="50" class="rounded-circle" alt="image">
 
                             <div class="info ml-3">
-                                <b>Anonyme</b>
+                                <b *ngIf="!belongs(offer.user)">Anonyme</b>
+                                <b *ngIf="belongs(offer.user)">{{display_name}}</b>
+
                                 <span class="d-block" style="font-size: small;">{{offer.creation_date | date: "dd MMM YYY à HH:mm"}}</span>
                             </div>
                         </div>
@@ -430,6 +859,88 @@
                 </div>
             </div>
         </div>
+        <div *ngIf="isTableView" class="table-responsive">
+            <table class="table shadow-sm align-middle" style="border-radius: 15px; overflow: hidden;">
+              <thead class="text-white" style="background-color: #357EDD;">
+                <tr class="text-center">
+                    <th>Id</th>
+                  <th>Départ</th>
+                  <th>Destination</th>
+                  <th>Date départ</th>
+                  <th>Date arrivé</th>
+                  <th>Volume</th>
+                  <th>Prix</th>
+                  <th style="width: 60px;">Map</th>
+                  <th style="width: 130px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  *ngFor="let offer of filteredOffers; let i = index ;trackBy: trackById"
+                  class="text-center"
+                  [ngStyle]="{ 'background-color': i % 2 === 0 ? '#f0f8ff' : 'white' }"
+                >
+                <td style="vertical-align: middle;">
+                  <div class="fw-bold">  {{offer.id_offre}}</div>
+                </td>
+                  <td style="vertical-align: middle;" > 
+                    <div class="fw-bold" style="margin-top:20px;">{{ offer.origin }}</div>
+                    <small class="text-muted">{{ mapService.departmentMap[offer.origin] }}</small>
+                  </td>
+                  <td style="vertical-align: middle;" >
+                    <div class="fw-bold" style="margin-top:20px;">{{ offer.destination }}</div>
+                    <small class="text-muted">{{ mapService.departmentMap[offer.destination] }}</small>
+                  </td>
+                  <td style="vertical-align: middle;" >
+                    <ng-container *ngIf="!offer.depart_date_end">
+                      <div class="fw-bold">Le {{ offer.depart_date_start | date:'yyyy-MM-dd' }}</div>
+                    </ng-container>
+                    <ng-container *ngIf="offer.depart_date_end">
+                      <div class="fw-bold">Entre {{ offer.depart_date_start | date:'yyyy-MM-dd' }}</div>
+                      <br>
+                      <div class="fw-bold">et {{ offer.depart_date_end | date:'yyyy-MM-dd' }}</div>
+                    </ng-container>
+                  </td>
+                  <td style="vertical-align: middle;" >
+                    <ng-container *ngIf="!offer.destination_date_end">
+                      <div class="fw-bold">Le {{ offer.destination_date_start | date:'yyyy-MM-dd' }}</div>
+                    </ng-container>
+                    <ng-container *ngIf="offer.destination_date_end">
+                      <div class="fw-bold">Entre {{ offer.destination_date_start | date:'yyyy-MM-dd' }}</div>
+                      <br>
+                      <div class="fw-bold">et {{ offer.destination_date_end | date:'yyyy-MM-dd' }}</div>
+                    </ng-container>
+                  </td>
+                  <td style="vertical-align: middle;" >
+                    <span class="badge bg-secondary">{{ offer.volume }} ㎥</span>
+                  </td>
+                  <td style="vertical-align: middle;" >
+                    <span class="badge bg-primary">{{ offer.prix }} €</span>
+                  </td>
+                  <td style="vertical-align: middle;"  class="text-center align-middle p-1">
+                    <div id="route{{offer.id_offre}}" style="transform-origin: top left; width: 250px; height: 250px; overflow: hidden; margin-top: -50px; cursor: pointer;"
+                         (click)="openInfoModal(offer.id_offre)" data-toggle="modal" data-target="#infoModal">
+                      <app-france-map [compact]="true" [route]="offer.route" [id]="offer.id_offre"></app-france-map>
+                    </div>
+                  </td>
+                  <td style="vertical-align: middle;" >
+                   
+                      
+                        <label class="badge1" (click)="openEditOfferModal(offer)" data-toggle="modal" data-target="#updateModal">
+                          <i class="bx bx-edit-alt text-primary"></i> Modifier
+                        </label>
+                        <label class="badge2" (click)="deleteOffer(offer.id_offre)">
+                          <i class="bx bx-trash text-danger"></i> Supprimer
+                        </label>
+                      
+                    
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          
     </div>
 
    

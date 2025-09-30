@@ -23,7 +23,9 @@ export class AdminCompaniesComponent {
       // If not, make the API call
       this.adminService.getCompanies().subscribe(
         response => {
-          this.companies = response;
+          this.companies = response.sort((a : any, b:any) => {
+            return new Date(b.date_inscription).getTime() - new Date(a.date_inscription).getTime();
+          });
           // Store the response in localStorage
           this.loading = false;
         },
@@ -78,31 +80,50 @@ export class AdminCompaniesComponent {
 }
 
 
-
 downloadFile(company: any): void {
-  const relativePath = this.companies.find(c => c.id === company.id)?.file;
-  const fileUrl = relativePath ? `/api/media/${relativePath}` : '';
+  const fileUrl = company.file?.replace('http://', 'https://');
+  const fileName = 'epreuve_' + company.name + '.pdf';
 
   if (fileUrl) {
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = 'epreuve_' + company.name + '.pdf';
-    link.click();
+    fetch(fileUrl, {
+      method: 'GET',
+      credentials: 'include' // If authentication/session required
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to download file');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    })
+    .catch(error => {
+      console.error('Error downloading file:', error);
+    });
   } else {
-    console.error('File not found');
+    console.error('File URL not found for company:', company);
   }
 }
 
-previewFile(company: any): void {
-  const relativePath = this.companies.find(c => c.id === company.id)?.file;
-  const fileUrl = relativePath ? `/api/media/${relativePath}` : '';
 
+
+previewFile(company: any): void {
+  const fileUrl = company.file;
   if (fileUrl) {
     window.open(fileUrl, '_blank');
   } else {
     console.error('File URL not found for company:', company);
   }
 }
+
 
   
   isNew(dateInscription: string): boolean {

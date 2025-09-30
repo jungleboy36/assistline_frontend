@@ -56,7 +56,7 @@ export class LoginComponent {
   
             if (session.role === 'admin') {
               this.router.navigate(['/admin/companies']);
-            } else if (session.role === 'user') {
+            } else if (session.role === 'professionnel' || session.role === 'particulier') {
               this.router.navigate(['/offers']);
             }
   

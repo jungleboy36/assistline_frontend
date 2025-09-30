@@ -61,3 +61,12 @@
   }
   
 }
+
+.map-compact{
+  @media screen and (min-width: 992px) {
+    scale: 0.3;
+  }
+  @media screen and (max-width: 991px) {
+    scale: 0.7;
+  }
+}

@@ -12,6 +12,7 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+
         </style>
     </head>    
     
@@ -26,7 +27,7 @@
             <ul class="navbar-nav left-nav align-items-center">
      
             </ul>
-            <form class="nav-search-form d-none ml-auto d-md-block">
+            <form class="nav-search-form d-none ml-auto d-md-block" [formGroup]="navForm" >
                
             </form>
 
@@ -113,7 +114,6 @@
                     <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <div class="menu-profile">
                             <span class="name">Bonjour! {{ display_name }}</span>
-                            <img [src]="profileImageUrl" alt="Profile Image" *ngIf="profileImageUrl" class="rounded-circle" >
                         </div>
                     </a>
                 
@@ -125,10 +125,11 @@
                 
                             <div class="info text-center">
                                 <span class="name">{{ display_name }}</span>
+                                <p class="mb-1" >{{userInfo.role}}</p>
                                 <p class="mb-3 email">{{ email }}</p>
                             </div>
                         </div>
-                
+                <!-- 
                         <div class="dropdown-body">
                             <ul class="profile-nav p-0 pt-3" style="pointer-events: none;">
                                 <li class="nav-item">
@@ -139,7 +140,7 @@
                 
                             
                             </ul>
-                        </div>
+                        </div> -->
                 
                         <div class="dropdown-footer">
                             <ul class="profile-nav">

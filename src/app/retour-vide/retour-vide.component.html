@@ -1,0 +1,1002 @@
+<html lang="zxx">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon" type="image/png" src="../../assets/img/favicon.png">
+
+    <style>
+        .w-40 {
+            width: 40% !important;
+          }
+        @media screen and (min-width:1200px ) and (max-width: 1300px){
+            .modal-content{
+                width:90%;
+                justify-self:center;
+            }
+
+           
+            }
+        .badge1{
+            background-color: #e9e8fd;
+            padding:7px 9px 6px;
+            color: #001fff;
+            cursor: pointer;
+            -webkit-transition: 0.5s;
+            transition: 0.5s;
+            margin-bottom: 3px;
+            margin-right: 1px;
+            display: inline-block;
+            font-size: 95%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25rem;
+            &:hover {
+                color: white;
+                background-color: #001fff;
+            };
+         
+        }
+        .badge2{
+            background-color: #fde8e8;
+            padding: 7px 9px 6px;
+            color: #e1000a;
+            cursor: pointer;
+            -webkit-transition: 0.5s;
+            transition: 0.5s;
+            margin-bottom: 3px;
+            margin-right: 1px;
+            display: inline-block;
+            font-size: 95%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25rem;
+            &:hover {
+                color: white;
+                background-color: #e1000a;
+            };
+         
+        }
+    </style>
+ 
+    
+</head>
+
+<body>
+    <app-sidebar></app-sidebar>
+
+    <div class="main-content d-flex flex-column hide-sidemenu-area">
+        <app-navbar></app-navbar>
+
+        <br>
+        <h2>Retour Vide</h2>
+   
+       <!-- <button type="button" (click)="refresh()" class="btn btn-primary" style="width: 50px;height:30px;margin-bottom:10px">
+           <i class="bx bx-revision"></i>
+        </button> -->
+        
+        <!-- Offer modal -->
+        <!-- Button trigger modal -->
+        
+            
+        <div style="display:grid">
+        <div style="width:30%;justify-self:end;display:flex;justify-content:right;">
+           
+              <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#filterModal" style="justify-content: right;margin-right:15px;" ><i class="bx bx-slider-alt" style="margin-right: 5px; margin-top:5px;justify-self:end;"></i>Filtrer</button> <br>
+           <!-- <input type="text" class="form-control inline-block" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()" *ngIf="! isCompany() " style="margin-top:40px" >-->
+            <!--<input type="text" class="form-control inline-block" style="margin-top: 10px;" placeholder="Rechercher..." [(ngModel)]="searchQuery" (input)="applyFilter()"  id="searchQuery" >-->
+           
+            <!--<label class="badge1" data-toggle="modal" data-target="#filterModal" style="justify-content: right;margin-right:15px;padding-bottom:10px    " ><i class="bx bx-slider-alt" style="margin-right: 5px; margin-top:5px;justify-self:end;"></i>Filtrer</label> <br>-->
+
+              
+        </div>
+
+
+        <div class="text-right"  data-toggle="tooltip"
+        title="Changer l'affichage (Table/Cartes)" style="justify-self:end;margin-right:15px;margin-top:5px;margin-bottom:-5px;">
+            <div class="toggle-switch-dark" (click)="toggleView()" [class.active]="!isTableView">
+              <div class="toggle-icon left" [class.selected]="isTableView">
+                <i class="bi bi-list-ul"></i>
+              </div>
+              <div class="toggle-icon right" [class.selected]="!isTableView">
+                <i class="bi bi-grid"></i>
+              </div>
+              <div class="slider"></div>
+            </div>
+          </div>
+        <div style="justify-self:left;margin-top:-30px;">
+            <label class="badge1" style="width:190px;" data-toggle="modal" data-target="#retourModal" >
+                + ajouter une retour vide
+            </label>
+        </div>
+ <!--Ajout retour vide Modal -->
+<div class="modal fade" id="retourModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title"><strong>Ajouter un retour vide</strong></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeModal" #addOfferModal>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+  
+        <!-- Form -->
+        <form [formGroup]="retourForm" (ngSubmit)="onSubmit()">
+            <div class="modal-body"> 
+
+                <!-- Basic Info Section -->
+                <!-- Volume & Price + Type & Reference -->
+                <div class="row mb-4">
+                  <!-- Volume & Price -->
+                  
+                  
+                  <!-- Type & Reference -->
+                  <div class="col-md-6">
+                    <div class="bg-light p-3 rounded shadow-sm h-100">
+                      <h6 class="text-primary mb-3 font-weight-bold" >Dates</h6>
+      
+                      <!-- Départ -->
+                      <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Période de départ:</label>
+                        <div class="d-flex gap-2">
+                          <input
+                            type="date"
+                            class="form-control w-40"
+                            formControlName="depart_date_start"
+                            [min]="todayString"
+                          />
+                          <input
+                            type="date"
+                            class="form-control w-40"
+                            formControlName="depart_date_end"
+                            [min]="retourForm.get('depart_date_start')?.value || todayString"
+                          />
+                        </div>
+                        <small class="text-danger" *ngIf="retourForm.get('depart_date_start')?.hasError('datePast')">
+                          La date de début ne peut pas être dans le passé.
+                        </small>
+                        <small class="text-danger" *ngIf="retourForm.get('depart_date_end')?.hasError('minDate')">
+                          La date de fin doit être ≥ date de début.
+                        </small>
+                      </div>
+      
+                      <!-- Livraison -->
+                      <div class="form-group">
+                        <label><i class="fas fa-calendar-check"></i> Période de livraison:</label>
+                        <div class="d-flex gap-2">
+                          <input
+                            type="date"
+                            class="form-control w-40"
+                            formControlName="arrival_date_start"
+                            [min]="todayString"
+                          />
+                          <input
+                            type="date"
+                            class="form-control w-40"
+                            formControlName="arrival_date_end"
+                            [min]="retourForm.get('arrival_date_start')?.value || todayString"
+                          />
+                        </div>
+                        <small class="text-danger" *ngIf="retourForm.get('arrival_date_start')?.hasError('datePast')">
+                          La date de début de livraison ne peut pas être dans le passé.
+                        </small>
+                        <small class="text-danger" *ngIf="retourForm.get('arrival_date_end')?.hasError('minDate')">
+                          La date de fin de livraison doit être ≥ date de début.
+                        </small>
+                      </div>
+                   
+                  <!-- Volume Section -->
+                  
+                      <h6 class="text-primary mb-3">Volume</h6>
+                      <div class="form-group">
+                        <input
+                          type="number"
+                          class="form-control w-40"
+                          formControlName="volume"
+                          min="1"
+                          placeholder="0"
+                        />
+                        <small class="text-danger" *ngIf="retourForm.get('volume')?.hasError('min')">
+                          Le volume doit être un nombre positif.
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+      
+      
+
+
+                  <div class="col-md-6">
+                    <div class="bg-light p-3 rounded shadow-sm h-100">
+                        <h6 class="text-primary font-weight-bold mb-3"><i class="fas fa-truck"></i> Informations</h6>
+                        <div class="row">
+                        <div class="form-group mb-3" style="display: inline-flex; gap: 10px;">
+                            <div class="col-4">
+                            <label for="type_camion" style="margin-top: 10px;"> <b>Type camion:</b></label></div>
+                            <div class="checkbox-wrapper-16 col" id="type_camion" style="gap: 10px;">
+                                <label class="checkbox-wrapper">
+                                  <input type="radio" class="checkbox-input" id="camion1" formControlName="typeCamion" name="typeCamion" value="VL"/>
+                                  <span class="checkbox-tile">
+                                    <span class="checkbox-label">VL</span>
+                                  </span>
+                                </label>
+                                <label class="checkbox-wrapper ml-1">
+                                    <input type="radio" class="checkbox-input" id="camion2" formControlName="typeCamion" name="typeCamion" value="PL"/>
+                                    <span class="checkbox-tile">
+                                      <span class="checkbox-label">PL</span>
+                                    </span>
+                                  </label>
+                              </div>
+                             
+
+                              
+
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="form-group mb-3" style="display: inline-flex; gap: 10px;">
+                              <div class="col-4">
+                                <label for="type_camion" style="margin-top:10px;"> <b>Avec Hayon:</b></label></div>
+                                <div class="checkbox-wrapper-16 col" id="type_camion" style="gap: 10px;">
+                                    <label class="checkbox-wrapper">
+                                      <input type="radio" class="checkbox-input" id="h1" name="avecHayon" formControlName="avecHayon" value="Oui" />
+                                      <span class="checkbox-tile">
+                                        <span class="checkbox-label">Oui</span>
+                                      </span>
+                                    </label>
+                                    <label class="checkbox-wrapper ml-1">
+                                        <input type="radio" class="checkbox-input" id="h2" name="hayon" formControlName="avecHayon" name="avecHayon" value="Non"/>
+                                        <span class="checkbox-tile">
+                                          <span class="checkbox-label">Non</span>
+                                        </span>
+                                      </label>
+                                  </div>
+                                  
+                                  
+                                  
+    
+                                </div>
+
+                                </div>
+                                <div class="row">
+                                <div class="form-group mb-3" style="display: inline-flex; gap: 10px;">
+                                    <div class="col-4"><label for="type_camion" style="margin-top:10px;"> <b>Détour possible:</b></label></div>
+                                    <div class="checkbox-wrapper-16 col" id="type_camion" style="gap: 10px;">
+                                        <label class="checkbox-wrapper">
+                                          <input type="radio" class="checkbox-input" id="d1" name="detour"  formControlName="detour" [value]="'Oui'" />
+                                          <span class="checkbox-tile">
+                                            <span class="checkbox-label">Oui</span>
+                                          </span>
+                                        </label>
+                                        <label class="checkbox-wrapper ml-1">
+                                            <input type="radio" class="checkbox-input" id="d2" name="detour" formControlName="detour"  [value]="'Non'"/>
+                                            <span class="checkbox-tile">
+                                              <span class="checkbox-label">Non</span>
+                                            </span>
+                                          </label>
+                                      </div>
+                                      
+                                      
+                                      
+        
+                                    </div>
+                                  </div>
+                            </div>
+                            
+                  </div>
+                </div>
+              
+  <!-- Coordonnées & Dates -->
+  <div class="row mb-4" *ngIf="detourValue === 'Non'">
+    <!-- Coordonnées -->
+    <div class="col-md-6" >
+      <div class="bg-light p-3 rounded shadow-sm h-100">
+        
+        <h6 class="text-primary font-weight-bold" style="margin-bottom: -3px;">Coordonnées</h6>
+        <small class="text-secondary font-weight-bold" >(les deux derniers chiffres du code postal)</small>
+        
+        <div class="form-group mb-3" style="padding-top: 15px;">
+          <label for="origin"><i class="fas fa-location-arrow"></i> Départ</label>
+          <div class="d-flex gap-2">
+            <input type="text" id="origin" class="form-control w-40" formControlName="origin"
+                 placeholder="01-95" maxlength="2"
+                 pattern="[0-9]{1,2}"  required><span class="font-weight-bold" style="margin-top: 10px;">{{originName}}</span>
+                 </div>
+       
+        </div>
+        <div class="form-group">
+          <label for="destination"><i class="fas fa-map-marker-alt"></i> Destination</label>
+          <div class="d-flex gap-2">
+          <input type="text" id="destination" class="form-control w-40" formControlName="destination"
+                  placeholder="01-95" maxlength="2"
+                 pattern="[0-9]{1,2}"  required><span class="font-weight-bold" style="margin-top: 10px;">{{destinationName}}</span>
+                
+                </div>
+        </div>
+      </div>
+    </div>
+  
+  <!-- Dates -->
+
+</div>
+               
+    
+              
+                <!-- Map Section -->
+                <div class="p-3 shadow-sm rounded bg-light mb-3 add-map" (click)="updateRoute()" *ngIf="detourValue === 'Oui'">
+                  <label class="mb-2"><strong>• Sélectionnez l'itinéraire sur la carte :</strong></label>
+                  <app-france-map modalType="add"></app-france-map>
+                  <button type="button" class="btn btn-outline-info btn-sm mt-3" >Réinitialiser la carte</button>
+                </div>
+              
+              </div>
+              
+  
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button type="button" #cancelButton  class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary" [disabled]="retourForm.invalid || addloading">
+              <div class="spinner-border text-light"  style="width: 15px; height: 15px;" role="status" *ngIf="addloading">
+                <span class="sr-only">Loading...</span>
+              </div>
+              Ajouter
+            </button>
+          </div>
+  
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Proposition Modal -->
+<!-- Proposition Modal (stylisé comme “Ajouter un retour vide”) -->
+<div class="modal fade" id="propositionModal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <strong>Faire une proposition</strong>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Fermer"
+        ></button>
+      </div>
+
+      <!-- Formulaire -->
+      <form [formGroup]="propositionForm" (ngSubmit)="submitProposition()">
+        <div class="modal-body">
+          <!-- ========================= -->
+          <!-- 1) Informations Particulier & Détails Proposition -->
+          <!-- ========================= -->
+          <div class="row mb-4">
+            <!-- Informations Particulier -->
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary mb-3 font-weight-bold">
+                  <i class="fas fa-user"></i> Informations Particulier
+                </h6>
+
+                <!-- Civilité -->
+                <div class="mb-3">
+                  <label for="civility" class="form-label">Civilité</label>
+                  <select
+                    id="civility"
+                    class="form-select"
+                    formControlName="civility"
+                  >
+                    <option value="" disabled>Choisir…</option>
+                    <option value="M">M.</option>
+                    <option value="Mme">Mme</option>
+                    <option value="Mlle">Mlle</option>
+                  </select>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('civilite')?.invalid &&
+                      propositionForm.get('civilite')?.touched
+                    "
+                  >
+                    La civilité est requise.
+                  </small>
+                </div>
+
+                <!-- Prénom -->
+                <div class="mb-3">
+                  <label for="first_name" class="form-label">Prénom</label>
+                  <input
+                    id="first_name"
+                    type="text"
+                    class="form-control"
+                    formControlName="first_name"
+                  />
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('first_name')?.invalid &&
+                      propositionForm.get('first_name')?.touched
+                    "
+                  >
+                    Le prénom est requis.
+                  </small>
+                </div>
+
+                <!-- Nom -->
+                <div class="mb-3">
+                  <label for="last_name" class="form-label">Nom</label>
+                  <input
+                    id="last_name"
+                    type="text"
+                    class="form-control"
+                    formControlName="last_name"
+                  />
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('last_name')?.invalid &&
+                      propositionForm.get('last_name')?.touched
+                    "
+                  >
+                    Le nom est requis.
+                  </small>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    class="form-control"
+                    formControlName="email"
+                  />
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('email')?.hasError('required') &&
+                      propositionForm.get('email')?.touched
+                    "
+                  >
+                    L’email est requis.
+                  </small>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('email')?.hasError('email') &&
+                      propositionForm.get('email')?.touched
+                    "
+                  >
+                    Adresse email invalide.
+                  </small>
+                </div>
+
+                <!-- Téléphone -->
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Téléphone</label>
+                  <input
+                    id="phone"
+                    type="text"
+                    class="form-control"
+                    formControlName="phone"
+                  />
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('phone')?.invalid &&
+                      propositionForm.get('phone')?.touched
+                    "
+                  >
+                    Le téléphone est requis.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Détails Proposition -->
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm h-100">
+                <h6 class="text-primary mb-3 font-weight-bold">
+                  <i class="fas fa-box"></i> Détails Proposition
+                </h6>
+
+                <!-- Volume proposé -->
+                <div class="mb-3">
+                  <label for="volume_propose" class="form-label"
+                    >Volume proposé (m³)</label
+                  >
+                  <input
+                    id="volume_propose"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    class="form-control w-50"
+                    formControlName="volume_propose"
+                  />
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('volume_propose')?.hasError('required') &&
+                      propositionForm.get('volume_propose')?.touched
+                    "
+                  >
+                    Le volume est requis.
+                  </small>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('volume_propose')?.hasError('min') &&
+                      propositionForm.get('volume_propose')?.touched
+                    "
+                  >
+                    Le volume doit être ≥ 0.01.
+                  </small>
+                </div>
+
+                <!-- Biens -->
+                <div class="mb-3">
+                  <label for="biens" class="form-label">Biens</label>
+                  <textarea
+                    id="biens"
+                    type="text"
+                    class="form-control"
+                    formControlName="biens"
+                  rows="5"></textarea>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('biens')?.invalid &&
+                      propositionForm.get('biens')?.touched
+                    "
+                  >
+                    Ce champ est requis.
+                  </small>
+                </div>
+
+                <!-- Flexibilité -->
+                <div class="form-check form-switch mb-0">
+                  <input
+                    id="flexibilite"
+                    type="checkbox"
+                    class="form-check-input"
+                    formControlName="flexibilite"
+                  />
+                  <label for="flexibilite" class="form-check-label"
+                    >Flexible</label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================= -->
+          <!-- 2) Période Souhaitée -->
+          <!-- ========================= -->
+          <div class="row mb-4">
+            <div class="col-md-12">
+              <div class="bg-light p-3 rounded shadow-sm">
+                <h6 class="text-primary mb-3 font-weight-bold">
+                  <i class="fas fa-calendar-alt"></i> Période Souhaitée
+                </h6>
+
+                <div class="row">
+                  <!-- Début -->
+                  <div class="col-md-6 mb-3">
+                    <label for="periode_souhaitee_start" class="form-label"
+                      >Début</label
+                    >
+                    <input
+                      id="periode_souhaitee_start"
+                      type="date"
+                      class="form-control"
+                      formControlName="periode_souhaitee_start"
+                      [min]="todayString"
+                    />
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('periode_souhaitee_start')?.hasError(
+                          'required'
+                        ) &&
+                        propositionForm.get('periode_souhaitee_start')?.touched
+                      "
+                    >
+                      Date requise.
+                    </small>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('periode_souhaitee_start')?.hasError(
+                          'datePast'
+                        ) &&
+                        propositionForm.get('periode_souhaitee_start')?.touched
+                      "
+                    >
+                      La date ne peut pas être antérieure à aujourd’hui.
+                    </small>
+                  </div>
+
+                  <!-- Fin -->
+                  <div class="col-md-6 mb-3">
+                    <label for="periode_souhaitee_end" class="form-label"
+                      >Fin</label
+                    >
+                    <input
+                      id="periode_souhaitee_end"
+                      type="date"
+                      class="form-control"
+                      formControlName="periode_souhaitee_end"
+                      [min]="propositionForm.get('periode_souhaitee_start')?.value || todayString"
+                    />
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('periode_souhaitee_end')?.hasError(
+                          'required'
+                        ) &&
+                        propositionForm.get('periode_souhaitee_end')?.touched
+                      "
+                    >
+                      Date requise.
+                    </small>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('periode_souhaitee_end')?.hasError(
+                          'minDate'
+                        ) &&
+                        propositionForm.get('periode_souhaitee_end')?.touched
+                      "
+                    >
+                      La date de fin doit être ≥ date de début.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================= -->
+          <!-- 3) Adresses Chargement & Livraison -->
+          <!-- ========================= -->
+          <div class="row mb-4">
+            <!-- Adresse de chargement -->
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm position-relative h-100">
+                <h6 class="text-primary mb-3 font-weight-bold">
+                  <i class="fas fa-truck-loading"></i> Adresse de Chargement
+                </h6>
+
+                <!-- Input + suggestions -->
+                <div class="mb-3">
+                  <input
+                    id="adresse_chargement"
+                    type="text"
+                    class="form-control"
+                    formControlName="adresse_chargement"
+                    placeholder="Tapez une adresse..."
+                    autocomplete="off"
+                  />
+                  <ul
+                    id="chargement-suggestions"
+                    class="list-group position-absolute"
+                    style="
+                      z-index: 1000;
+                      width: 100%;
+                      max-height: 200px;
+                      overflow-y: auto;
+                    "
+                  ></ul>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('adresse_chargement')?.invalid &&
+                      propositionForm.get('adresse_chargement')?.touched
+                    "
+                  >
+                    L’adresse de chargement est requise.
+                  </small>
+                </div>
+
+                <!-- Étage -->
+                <div class="row">
+                  <div class="col-6 mb-3">
+                    <label for="etage_chargement" class="form-label">Étage</label>
+                    <select
+                      id="etage_chargement"
+                      class="form-select"
+                      formControlName="etage_chargement"
+                    >
+                      <option value="" disabled>Choisir…</option>
+                      <option *ngFor="let f of floors" [value]="f">{{ f }}</option>
+                    </select>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('etage_chargement')?.invalid &&
+                        propositionForm.get('etage_chargement')?.touched
+                      "
+                    >
+                      L’étage est requis.
+                    </small>
+                  </div>
+
+                  <!-- Passage -->
+                  <div class="col-6 mb-3">
+                    <label for="passage_chargement" class="form-label"
+                      >Possède un passage ?</label
+                    >
+                    <select
+                      id="passage_chargement"
+                      class="form-select"
+                      formControlName="passage_chargement"
+                    >
+                      <option [ngValue]="null" disabled>Choisir…</option>
+                      <option value="ASC">Ascenseur</option>
+                      <option value="ESC">Escalier</option>
+                    </select>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('passage_chargement')?.invalid &&
+                        propositionForm.get('passage_chargement')?.touched
+                      "
+                    >
+                      Ce champ est requis.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Adresse de livraison -->
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded shadow-sm position-relative h-100">
+                <h6 class="text-primary mb-3 font-weight-bold">
+                  <i class="fas fa-truck-moving"></i> Adresse de Livraison
+                </h6>
+
+                <!-- Input + suggestions -->
+                <div class="mb-3">
+                  <input
+                    id="adresse_livraison"
+                    type="text"
+                    class="form-control"
+                    formControlName="adresse_livraison"
+                    placeholder="Tapez une adresse..."
+                    autocomplete="off"
+                  />
+                  <ul
+                    id="livraison-suggestions"
+                    class="list-group position-absolute"
+                    style="
+                      z-index: 1000;
+                      width: 100%;
+                      max-height: 200px;
+                      overflow-y: auto;
+                    "
+                  ></ul>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      propositionForm.get('adresse_livraison')?.invalid &&
+                      propositionForm.get('adresse_livraison')?.touched
+                    "
+                  >
+                    L’adresse de livraison est requise.
+                  </small>
+                </div>
+
+                <!-- Étage & Passage -->
+                <div class="row">
+                  <div class="col-6 mb-3">
+                    <label for="etage_livraison" class="form-label">Étage</label>
+                    <select
+                      id="etage_livraison"
+                      class="form-select"
+                      formControlName="etage_livraison"
+                    >
+                      <option value="" disabled>Choisir…</option>
+                      <option *ngFor="let f of floors" [value]="f">{{ f }}</option>
+                    </select>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('etage_livraison')?.invalid &&
+                        propositionForm.get('etage_livraison')?.touched
+                      "
+                    >
+                      L’étage est requis.
+                    </small>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <label for="passage_livraison" class="form-label"
+                      >Possède un passage ?</label
+                    >
+                    <select
+                      id="passage_livraison"
+                      class="form-select"
+                      formControlName="passage_livraison"
+                    >
+                      <option [ngValue]="null" disabled>Choisir…</option>
+                      <option value="ASC">Ascenseur</option>
+                      <option value="ESC">Escalier</option>
+                    </select>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        propositionForm.get('passage_livraison')?.invalid &&
+                        propositionForm.get('passage_livraison')?.touched
+                      "
+                    >
+                      Ce champ est requis.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="propositionForm.invalid || isSubmittingProp"
+          >
+            <div
+              class="spinner-border text-light me-2"
+              style="width: 1rem; height: 1rem;"
+              role="status"
+              *ngIf="isSubmittingProp"
+            >
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            Envoyer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+        <hr>
+        <br>
+        <div *ngIf="isTableView" class="table-responsive">
+          <table class="table shadow-sm align-middle" style="border-radius: 15px; overflow: hidden;">
+            <thead class="text-white" style="background-color: #357EDD;">
+              <tr class="text-center">
+                  <th>Id</th>
+                <th>Départ</th>
+                <th>Destination</th>
+                <th>Date départ</th>
+                <th>Date arrivé</th>
+                <th>Informations</th>
+                
+              
+                <th style="width: 130px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr 
+                *ngFor="let r of retourVides; let i = index; trackBy: trackById"
+                class="text-center"
+                [ngStyle]="{ 'background-color': i % 2 === 0 ? '#f0f8ff' : 'white' }"
+              >
+              <td style="vertical-align: middle;">
+                <div class="fw-bold">  {{r.id}}</div>
+              </td>
+              <ng-container *ngIf=" r.detour_possible == false">
+                <td style="vertical-align: middle;" > 
+                  <div class="fw-bold" style="margin-top:20px;">{{ r.origin }}</div>
+                  <small class="text-muted">{{ mapService.departmentMap[r.origin] }}</small>
+                </td>
+                <td style="vertical-align: middle;" >
+                  <div class="fw-bold" style="margin-top:20px;">{{ r.destination }}</div>
+                  <small class="text-muted">{{ mapService.departmentMap[r.destination] }}</small>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="r.detour_possible == true">
+                
+                <td style="vertical-align: middle;"  class="text-center align-middle" colspan="2">
+                  <div id="route{{r.id}}" style="transform-origin: top left; width: 250px; height: 250px; overflow: hidden; margin-top: -50px; cursor: pointer;justify-self:center;"
+                        data-toggle="modal" data-target="#infoModal">
+                    <app-france-map [compact]="true" [route]="r.itineraire" [id]="r.id"></app-france-map>
+                  </div>
+                </td>
+              </ng-container>
+                <td style="vertical-align: middle;" >
+                  <ng-container *ngIf="!r.depart_date_end">
+                    <div class="fw-bold">{{ r.depart_date_start | date:'yyyy-MM-dd' }}</div>
+                  </ng-container>
+                  <ng-container *ngIf="r.depart_date_end">
+                    <div class="fw-bold">Entre {{ r.depart_date_start | date:'yyyy-MM-dd' }}</div>
+                    <br>
+                    <div class="fw-bold">et {{ r.depart_date_end | date:'yyyy-MM-dd' }}</div>
+                  </ng-container>
+                </td>
+                <td style="vertical-align: middle;" >
+                  <ng-container *ngIf="!r.arrival_date_end">
+                    <div class="fw-bold">{{ r.arrival_date_start | date:'yyyy-MM-dd' }}</div>
+                  </ng-container>
+                  <ng-container *ngIf="r.arrival_date_end">
+                    <div class="fw-bold">Entre {{ r.arrival_date_start | date:'yyyy-MM-dd' }}</div>
+                    <br>
+                    <div class="fw-bold">et {{ r.arrival_date_end | date:'yyyy-MM-dd' }}</div>
+                  </ng-container>
+                </td>
+                
+                <td style="vertical-align: middle;">
+                  <!-- Camion type: VL=primary, PL=info -->
+                  <span
+                    class="badge rounded-pill me-1"
+                    [ngClass]="r.type_camion === 'VL' ? 'bg-primary' : 'bg-info'"
+                  >
+                    {{ r.type_camion }}
+                  </span>
+                
+                  <!-- Hayon: yes=success, no=danger -->
+                  <span
+                    class="badge rounded-pill me-1"
+                    [ngClass]="r.avec_hayon ? 'bg-success' : 'bg-danger'"
+                  >
+                    {{ r.avec_hayon ? 'Avec hayon' : 'Sans hayon' }}
+                  </span>
+                
+                  <!-- Détour: yes=warning (dark text), no=secondary -->
+                  <span
+                    class="badge rounded-pill"
+                    [ngClass]="
+                      r.detour_possible
+                        ? 'bg-success'
+                        : 'bg-danger'
+                    "
+                  >
+                    {{ r.detour_possible ? 'Détour possible' : 'Sans détour' }}
+                  </span>
+                </td>
+                
+                <td style="vertical-align: middle;" >
+                 
+                    
+                      <label class="badge1"  data-toggle="modal" data-target="#updateModal">
+                        <i class="bx bx-edit-alt text-primary"></i> Modifier
+                      </label>
+                      <label class="badge2" (click)="deleteRetourVide(r.id)">
+                        <i class="bx bx-trash text-danger"></i> Supprimer
+                      </label>
+                    <label class="badge1" (click)="openPropositionModal(r.id)"   data-toggle="modal"
+  data-target="#propositionModal">
+                      <i class="bx bx-info-circle text-info"></i> Faire prop.
+                    </label>
+                  
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+    </div>
+    </body>
+    </html>

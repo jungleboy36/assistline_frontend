@@ -9,7 +9,23 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  formData: any = {};
+  formData: any = {
+    role: 'particulier', // 'client' = Particulier, 'company' = Professionnel
+    civility: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    password: '',
+    password2: '',
+    raison_sociale: '',
+    siret: '',
+    contact_name: '',
+    file: null,
+    acceptTerms: false
+  };
+  phonePattern = '^(0|\\+33)[1-9][0-9]{8}$';
+
   loading: boolean = false;
   emailExists: boolean = false;
   constructor(private registerService: AuthService, private router: Router) { }
@@ -51,90 +67,87 @@ export class RegisterComponent {
   }
   
   
-
   submitForm(): void {
+
     this.loading = true;
-    if (!this.formData.name || !this.formData.email || !this.formData.password || !this.formData.password2 ) {
+  
+    // Basic empty field validation
+    if (!this.formData.email || !this.formData.password || !this.formData.password2) {
       Swal.fire({
         icon: 'error',
-        title: 'Champs Vides',
-        text: 'Veuillez remplir tous les champs obligatoires.',
+        title: 'Champs obligatoires',
+        text: 'Veuillez remplir les champs requis.',
         confirmButtonText: 'OK'
       });
       this.loading = false;
       return;
     }
-
-    if ( !this.formData.file) {
-      this.loading = false;
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Fichier manquant',
-        text: 'Veuillez télécharger un fichier.',
-        confirmButtonText: 'OK'
-      });
-      return;
-    }
-
+  
     if (this.formData.password !== this.formData.password2) {
-      this.loading = false;
-
       Swal.fire({
         icon: 'error',
         title: 'Mot de passe incorrect',
         text: 'Les mots de passe ne correspondent pas.',
         confirmButtonText: 'OK'
       });
+      this.loading = false;
       return;
     }
-
-    // Ensure the Base64 encoded file content is included in the form data
-
+  
+    if (this.formData.role === 'professionnel' && !this.formData.file) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Fichier requis',
+        text: 'Veuillez télécharger votre KBIS.',
+        confirmButtonText: 'OK'
+      });
+      this.loading = false;
+      return;
+    }
+  
+    // Create the form data to send
     const formData = new FormData();
-    formData.append('name', this.formData.name);
     formData.append('email', this.formData.email);
     formData.append('password', this.formData.password);
-    formData.append('password2', this.formData.password2);
-    formData.append('image', ''); // Optional
-    formData.append('file', this.formData.file); // ✅ Real File object
-    
-   
-    // Call the register service
+    formData.append('role', this.formData.role );
+    formData.append('phone', this.formData.phone || '');
+  
+    // Particulier fields
+    if (this.formData.role === 'particulier') {
+      formData.append('civility', this.formData.civility || '');
+      formData.append('first_name', this.formData.firstName || '');
+      formData.append('last_name', this.formData.lastName || '');
+    }
+  
+    // Professionnel fields
+    if (this.formData.role === 'professionnel') {
+      formData.append('raison_sociale', this.formData.raison_sociale || '');
+      formData.append('siret', this.formData.siret || '');
+      formData.append('contact_name', this.formData.contact_name || '');
+      if (this.formData.file) {
+        formData.append('file', this.formData.file);
+      }
+    }
+  
+    // Submit the registration
     this.registerService.register(formData).subscribe(
-      
       response => {
-        this.loading = true;
-/* 
-        Swal.fire({
-          icon: 'success',
-          title: 'Inscription réussie !',
-          text: 'Vous vous êtes inscrit avec succès.',
-          confirmButtonText: 'OK'
-        }); */
+        this.loading = false;
         this.router.navigate(['verify-email'], { queryParams: { email: this.formData.email } });
       },
       error => {
         this.loading = false;
-        console.log("error: ",error.error.error);
-        if (error.error.error == "The user with the provided email already exists (EMAIL_EXISTS)."){
-          Swal.fire({
-            icon: 'error',
-            title: 'Échec de l\'inscription',
-            text: 'Un utilisateur avec cet email existe déjà.',
-            confirmButtonText: 'OK'
-          });
-        }
-        else{
+        const errorMessage = error?.error?.error || 'Une erreur est survenue. Veuillez réessayer plus tard.';
         Swal.fire({
           icon: 'error',
           title: 'Échec de l\'inscription',
-          text: 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer plus tard.',
+          text: errorMessage.includes('exists') ? 'Un utilisateur avec cet email existe déjà.' : errorMessage,
           confirmButtonText: 'OK'
-        });}
+        });
       }
     );
   }
+  
 
   // Validate email format
   isEmailValid(email: string): boolean {

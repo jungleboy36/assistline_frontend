@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 export class TokenInterceptor implements HttpInterceptor {
 
   // URLs that should be excluded from having JWT included
-  private excludedUrls: string[] = []; // Add more URLs as needed
+  private excludedUrls: string[] = ['/login','https://nominatim.openstreetmap.org/']; // Add more URLs as needed
 
   constructor(private authService: AuthService, private router: Router) {}
 

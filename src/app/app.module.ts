@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule ,HttpClientJsonpModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { OfferListComponent } from './offer-list/offer-list.component';
@@ -36,6 +36,7 @@ import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.compo
 import { FranceMapComponent } from './france-map/france-map.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RetourVideComponent } from './retour-vide/retour-vide.component';
 
 const firebaseConfig = environment.firebaseConfig;
 @NgModule({
@@ -67,6 +68,7 @@ const firebaseConfig = environment.firebaseConfig;
     ResetPasswordComponent,
     DashboardAdminComponent,
     FranceMapComponent,
+    RetourVideComponent,
     
    
     
@@ -77,6 +79,11 @@ const firebaseConfig = environment.firebaseConfig;
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+      HttpClientJsonpModule  ,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'csrftoken',
+      headerName: 'X-CSRFToken'
+    }),
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule,

@@ -66,7 +66,7 @@ moveToNext(event: Event, index: number) {
               });
             },
             error => {
-              console.log("test: ",error.error.message=="expired");
+              console.log(error);
              
               if(error.error.message=="expired"){
                 this.errorMessage = 'Le code a expiré. Veuillez en demander un nouveau.';
@@ -111,4 +111,17 @@ moveToNext(event: Event, index: number) {
       this.loading = false;
     });
   }
+  onOtpPaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const pasted = event.clipboardData?.getData('text')?.trim() || '';
+    if (pasted.length === this.otp.length && /^\d+$/.test(pasted)) {
+      for (let i = 0; i < this.otp.length; i++) {
+        this.otp[i] = pasted.charAt(i);
+      }
+      // update view and then verify
+      setTimeout(() => this.verifyOtp(), 0);
+    }
+  }
+  
+  
 }

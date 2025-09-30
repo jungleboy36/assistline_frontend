@@ -14,3 +14,73 @@
 .noUi-connect {
     background: #3f82b8 !important;
 }
+.toggle-switch-dark {
+    position: relative;
+    width: 90px;              /* ⬆ wider */
+    height: 44px;             /* ⬆ taller */
+    background: transparent;
+    border: 2px solid black;
+    border-radius: 10px;      /* ⬅ less rounded */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .toggle-icon {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;         /* ⬆ icon size */
+    z-index: 2;
+    color: black;
+    transition: all 0.3s ease;
+  }
+  
+  .toggle-icon.selected {
+    background: black;
+    color: white;
+  }
+  
+  .toggle-switch-dark .slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 40px;               /* ⬆ slider width */
+    height: 40px;              /* ⬆ slider height */
+    background: black;
+    border-radius: 6px;        /* ⬅ less round dot */
+    transition: left 0.3s ease;
+    z-index: 1;
+  }
+  
+  .toggle-switch-dark.active .slider {
+    left: 46px;                /* ⬅ match wider container */
+  }
+  tr , td{
+     
+     border-radius: 2px !important;
+    border-width: thin !important; 
+     border-color: lightgrey !important;
+  }
+
+  /* mêmes largeurs que "add" modal */
+.form-control.w-75 {
+  width: 75% !important;
+}
+.w-40 {
+  width: 40% !important;
+}
+/* espacement horizontal identique */
+.d-flex.gap-2 > *:not(:last-child) {
+  margin-right: .5rem;
+}
+/* aligne la map et le bouton reset */
+.filter-map app-france-map {
+  display: block;
+  margin-bottom: 1rem;
+}

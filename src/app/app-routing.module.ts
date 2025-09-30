@@ -24,16 +24,19 @@ import { AvisComponent } from './avis/avis.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
 import { FranceMapComponent } from './france-map/france-map.component';
+import { RetourVideComponent } from './retour-vide/retour-vide.component';
 const routes: Routes = [
 
-{path:'offers', component: OfferListComponent , canActivate: [AuthGuard], data: { expectedRole: ['user'] }},
-  {path:'demandes', component: DemandeListComponent , canActivate: [AuthGuard], data: { expectedRole: ['user'] }},
-  {path:'france-map', component: FranceMapComponent , canActivate: [AuthGuard], data: { expectedRole: ['user'] }},
-  {path:'chat', component: ChatComponent, canActivate: [AuthGuard], data: { expectedRole: ['user'] }},
-  {path:'edit-demande/:id',component:EditDemandeComponent, canActivate: [AuthGuard],data: { expectedRole: 'user' }},
-  {path:'edit-offer/:id',component:EditOfferComponent, canActivate: [AuthGuard],data: { expectedRole: 'user' }},
-  {path:'profile', component:ProfileComponent, canActivate:[AuthGuard] , data: { expectedRole: ['user']}},
-  { path: 'details/:id', component: ProfileDetailsComponent, canActivate:[AuthGuard] , data: { expectedRole: ['user']} },
+{path:'offers', component: OfferListComponent , canActivate: [AuthGuard], data: { expectedRole: ['particulier','professionnel'] }},
+{path:'retour-vide', component: RetourVideComponent , canActivate: [AuthGuard], data: { expectedRole: ['particulier','professionnel'] }},
+
+  {path:'demandes', component: DemandeListComponent , canActivate: [AuthGuard], data: { expectedRole: ['particulier','professionnel'] }},
+  {path:'france-map', component: FranceMapComponent , canActivate: [AuthGuard], data: { expectedRole: ['particulier','professionnel'] }},
+  {path:'chat', component: ChatComponent, canActivate: [AuthGuard], data: { expectedRole: ['particulier','professionnel'] }},
+  {path:'edit-demande/:id',component:EditDemandeComponent, canActivate: [AuthGuard],data: { expectedRole: ['particulier','professionnel']}},
+  {path:'edit-offer/:id',component:EditOfferComponent, canActivate: [AuthGuard],data: { expectedRole: ['particulier','professionnel']}},
+  {path:'profile', component:ProfileComponent, canActivate:[AuthGuard] , data: { expectedRole: ['particulier','professionnel']}},
+  { path: 'details/:id', component: ProfileDetailsComponent, canActivate:[AuthGuard] , data: { expectedRole: ['particulier','professionnel']} },
   {path:'register',component:RegisterComponent},
   {path:'forbidden',component:ForbiddenComponent},
   {path:'home',component:HomeComponent},

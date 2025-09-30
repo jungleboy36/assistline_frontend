@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
   handleForbiddenAccess(userRole: string): void {
     if (userRole === 'admin') {
       this.router.navigate(['/admin/companies']);
-    } else if (userRole === 'user') {
+    } else if (userRole === 'particulier' || userRole === 'professionnel') {
       this.router.navigate(['/offers']);
     } else {
       this.router.navigate(['/login']);

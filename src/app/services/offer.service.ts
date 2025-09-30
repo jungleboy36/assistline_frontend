@@ -57,5 +57,8 @@ getMinDate(): string {
   // Format the minimum date string in a way that datetime-local input expects
   return `${year}-${month}-${day}`;
 }
+getOffreTypes(): Observable<any[]> {
+  return this.http.get<any[]>(environment.apiUrl+'/offre-types/');
+}
 
 }

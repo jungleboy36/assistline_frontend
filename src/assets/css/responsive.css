@@ -78,7 +78,7 @@
     top: -2px;
   }
   .top-navbar.navbar .profile-nav-item .menu-profile .name {
-    display: none;
+    display: block;
   }
   .top-navbar.navbar.is-sticky {
     left: 0;

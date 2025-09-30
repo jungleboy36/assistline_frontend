@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ProfileService } from '../services/profile.service';
 import { Location } from '@angular/common';
-import Pusher from 'pusher-js';
+import { FormBuilder, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: []
+  styleUrls: [ './navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
   isLoggedIn$ = this.authService.isLoggedIn$;
@@ -17,11 +17,15 @@ export class NavbarComponent implements OnInit {
   message : any = {};
   display_name :any;
   email : any;
-  constructor(public authService: AuthService,private profileService: ProfileService,private location: Location) {
+  navForm!: FormGroup;
+  constructor(public authService: AuthService,private profileService: ProfileService,private location: Location,private fb: FormBuilder) {
+    this.navForm = this.fb.group({
+      search: ['']   // must match your formControlName
+    });
+  }
 
-     
  
-   }
+   
 
   ngOnInit(): void {
 

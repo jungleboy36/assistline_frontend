@@ -29,7 +29,10 @@ declare global {
 
 
 export class OfferListComponent implements OnInit, AfterViewInit {
-  
+  public isSousTraitance = false;
+  floorNumbers: number[] = Array.from({ length: 30 }, (_, i) => i + 1);
+  isTableView = false;
+  etages: any[] = [];
   minEndDate1: Date = new Date() ;
   minEndDate2: Date = new Date() ;
   minEndDate3: Date = new Date() ;
@@ -69,6 +72,22 @@ export class OfferListComponent implements OnInit, AfterViewInit {
     route: '',
     volume: 0,
     prix:0,
+    reference:'',
+    type_offre:0,
+    depart_etage:'',
+    arrivee_etage:'',
+    depart_pres:'',
+    arrivee_pres:'',
+    commentaire:'',
+    escalier_depart:false,
+    ascenseur_depart:false,
+    monte_meuble_depart:false,
+    direct_depart:false,
+    escalier_arrivee:false,
+    ascenseur_arrivee:false,
+    monte_meuble_arrivee:false,
+    direct_arrivee:false,
+    
   };
   filter: any = {
   
@@ -105,7 +124,7 @@ export class OfferListComponent implements OnInit, AfterViewInit {
   @ViewChild('filterClose') filterCloseButton: ElementRef | undefined;
   @ViewChild('updateOfferModal') updateCloseButton: ElementRef | undefined;
 
-
+  display_name: string ='';
   loading: boolean = true;
   public role: string | null = null;
   minDate: string;
@@ -115,6 +134,7 @@ export class OfferListComponent implements OnInit, AfterViewInit {
   displayRegions$ = this.mapService.displayRegions$;
   selectedRegion$ = this.mapService.selectedRegions$;
   selectedFilterRegion$ = this.mapService.selectedFilterRegions$;
+  offerTypes: any[] = [];
   constructor(
     private offerService: OfferService,
     private router: Router,
@@ -147,13 +167,50 @@ export class OfferListComponent implements OnInit, AfterViewInit {
       destination: ['', Validators.required],
       volume: ['', Validators.required],
       prix: ['', Validators.required],
+      reference:['',Validators.required],
+      type_offre:['',Validators.required],
+      depart_etage:['',Validators.required],
+      arrivee_etage:['',Validators.required],
+      depart_pres:['',Validators.required],
+      arrivee_pres:['',Validators.required],
+      commentaire:[''],
+      escalier_depart:[''],
+      ascenseur_depart:[''],
+      monte_meuble_depart:[''],
+      direct_depart:[''],
+      escalier_arrivee:[''],
+      ascenseur_arrivee:[''],
+      monte_meuble_arrivee:[''],
+      direct_arrivee:[''],
+
       // Add other form controls here
   });
   }
 
   ngOnInit(): void {
+       // Retrieve user info from local storage
+       this.authService.getUser().subscribe(
+        data => {
+          this.display_name = data.name;
+        },
+        error => {
+          console.error('Error fetching user info', error);
+        }
+      );
     //-----JS for Price Range slider-----
-
+    this.offerService.getOffreTypes().subscribe(data => {
+      this.offerTypes = data;
+    });
+   this.etages = [
+      { label: 'RDC -2', value: 'RDC -2' },
+      { label: 'RDC -1', value: 'RDC -1' },
+      { label: 'RDC', value: 'RDC' },
+      ...Array.from({ length: 30 }, (_, i) => ({
+        label: `${i + 1}e étage`,
+        value: `${i + 1}`
+      }))
+    ];
+    
 $(function() {
 	$( "#slider-range").slider({
 	  range: true,
@@ -192,7 +249,41 @@ $(function() {
     });
   
 
+    this.offerForm.get('type_offre')!
+    .valueChanges
+    .subscribe(value => {
+      this.isSousTraitance = (value == 4);
+      console.log("is sous traitance: ",this.isSousTraitance);
 
+      const departEtage     = this.offerForm.get('depart_etage')!;
+      const departPres   = this.offerForm.get('depart_pres')!;
+      const arriveeEtage    = this.offerForm.get('arrivee_etage')!;
+      const arriveePres  = this.offerForm.get('arrivee_pres')!;
+
+      if (this.isSousTraitance) {
+        // Add required validators
+        departEtage.setValidators([ Validators.required ]);
+        departPres.setValidators([ Validators.required ]);
+        arriveeEtage.setValidators([ Validators.required ]);
+        arriveePres.setValidators([ Validators.required ]);
+      } else {
+        // Remove validators
+        departEtage.clearValidators();
+        departPres.clearValidators();
+        arriveeEtage.clearValidators();
+        arriveePres.clearValidators();
+      }
+      if(value ===  6){
+        this.offerForm.get('prix')?.clearValidators();
+        this.offerForm.get('prix')?.setValue(0);
+      }
+      else{
+        this.offerForm.get('prix')?.setValidators([Validators.required]);
+      }
+      // Re-run validation
+      [departEtage, departPres, arriveeEtage, arriveePres]
+        .forEach(ctrl => ctrl.updateValueAndValidity());
+    });
 
 
 
@@ -254,6 +345,7 @@ $(function() {
   }
 
   openAddOfferModal() {
+    
     this.showAddOfferModal = true;
 
   }
@@ -280,6 +372,7 @@ $(function() {
         //localStorage.setItem('cachedOffers', JSON.stringify(this.offers));
         this.loading = false;
         this.filteredOffers = [...this.offers];
+        
       },
       
       (error) => {
@@ -287,6 +380,7 @@ $(function() {
        // this.loading = false;
       }
     );
+
   }
   
 
@@ -360,6 +454,7 @@ $(function() {
   this.offerService.addOffer(this.newOffer).subscribe(
      (response)=>{
   this.isAdding = false;
+  this.resetAddForm();
   this.closeAddOfferModal();
   Swal.fire({
     title: 'Offre ajoutée avec succès',
@@ -379,6 +474,51 @@ this.loadOffers();},
   }
   );
 }
+
+
+resetAddForm() {
+   // If you're using Reactive Forms
+  this.newOffer = {
+    user_id: '',
+    depart_date_start: '',
+    depart_date_end: '',
+    destination_date_start: '',
+    destination_date_end: '',
+    origin:undefined,
+    destination :undefined,
+    route: '',
+    volume: 0,
+    prix:0,
+    reference:'',
+    type_offre:0,
+    depart_etage:'',
+    arrivee_etage:'',
+    depart_pres:'',
+    arrivee_pres:'',
+    commentaire:'',
+    escalier_depart:false,
+    ascenseur_depart:false,
+    monte_meuble_depart:false,
+    direct_depart:false,
+    escalier_arrivee:false,
+    ascenseur_arrivee:false,
+    monte_meuble_arrivee:false,
+    direct_arrivee:false,
+  };
+  const d1 = document.getElementById('departStartDate') as HTMLInputElement | null;
+  const d2 = document.getElementById('departEndDate') as HTMLInputElement | null;
+  const d3 = document.getElementById('destinationStartDate') as HTMLInputElement | null;
+  const d4 = document.getElementById('destinationEndDate') as HTMLInputElement | null;
+
+  if (d1) d1.value = '';
+  if (d2) d2.value = '';
+  if (d3) d3.value = '';
+  if (d4) d4.value = '';
+
+  $('.add-map').find('.land.selected').removeClass('selected');
+}
+
+
 openInfoModal(offerId: number) {
   $('.info-map .land.selected').removeClass('selected');
   this.mapLoading = true;
@@ -556,6 +696,7 @@ contacter(receiver_id : string,receiver_display_name:string) {
 }
 
 mapModal(){
+  this.offerForm.reset();
   setTimeout(() => {
     this.map.invalidateSize();
   }, 500);
@@ -634,64 +775,83 @@ validateNumber(event: KeyboardEvent) {
 }
 
 updateOfferDetails() {
- this.isUpdating = true;
-  if (this.offerForm.valid) {
-    const d1 = document.getElementById('departStartDate2') as HTMLInputElement;
-    const d2 = document.getElementById('departEndDate2') as HTMLInputElement;
-    const d3 = document.getElementById('destinationStartDate2') as HTMLInputElement;
-    const d4 = document.getElementById('destinationEndDate2') as HTMLInputElement;
-   // Ensures min updates dynamically
-    this.updateOffer.depart_date_start = (new Date(d1.value)).toISOString().split('T')[0];
-    this.updateOffer.destination_date_start = (new Date(d3.value)).toISOString().split('T')[0];
-    
-     this.updateOffer.depart_date_end = d2 && d2.value? (new Date(d2.value)).toISOString().split('T')[0] : null;
-    this.updateOffer.destination_date_end = d4 && d4.value ? (new Date(d4.value)).toISOString().split('T')[0] : null;
-    this.selectedRegion$.pipe(
-      map(regions => regions.map(region => region.id).join(','))
-    ).subscribe(routeString => {
-      this.updateOffer.route = routeString;
-    });
+  if (!this.offerForm.valid) return;
+  this.isUpdating = true;
 
+  const vals = this.offerForm.value;
+  const payload = {
+    ...this.updateOffer,
+    ...vals,
+    // ensure ISO dates
+    depart_date_start:  new Date(vals.depart_date_start).toISOString().slice(0,10),
+    destination_date_start: new Date(vals.arrival_date_start).toISOString().slice(0,10),
+    depart_date_end:    vals.depart_date_end
+                          ? new Date(vals.depart_date_end).toISOString().slice(0,10)
+                          : null,
+    destination_date_end: vals.arrival_date_end
+                          ? new Date(vals.arrival_date_end).toISOString().slice(0,10)
+                          : null
+  };
+
+  // rebuild route from selected regions
+  this.selectedRegion$
+    .pipe(take(1))
+    .subscribe(regs => {
+      payload.route = regs.map(r => r.id).join(',');
+      this.offerService.updateOffer(payload.id_offre, payload)
+        .subscribe(
+          _ => {
+            this.isUpdating = false;
+            this.closeUpdateOfferModal();
+            Swal.fire({ title: 'Offre modifiée avec succès', icon: 'success', timer: 1500, showConfirmButton: false });
+            this.loadOffers();
+            this.applyFilter();
+          },
+          _ => {
+            this.isUpdating = false;
+            Swal.fire({ title: 'Erreur lors de la modification', icon: 'error', timer: 1500, showConfirmButton: false });
+          }
+        );
+    });
 }
-console.log(this.updateOffer);
-this.updateOffer.origin= this.updateOffer.origin.length >1 ? this.updateOffer.origin : "0"+this.updateOffer.origin;
-this.updateOffer.destination= this.updateOffer.destination.length >1 ? this.updateOffer.destination : "0"+this.updateOffer.destination;
-this.offerService.updateOffer(this.updateOffer.id_offre,this.updateOffer).subscribe(
-    (response)=>{
-this.isUpdating = false;
-this.closeUpdateOfferModal();
-Swal.fire({
-  title: 'Offre modifiée avec succès',
-  icon: 'success',
-  showConfirmButton: false,
-  timer: 1500,
-});
-this.loadOffers();
-this.applyFilter();},
-(error)=>{
-  this.isUpdating = false;
-  Swal.fire({
-    title: 'Erreur lors de la modification de l\'offre',
-    icon: 'error',
-    showConfirmButton: false,
-    timer: 1500,
-  });
-}
-);
-}
+
 
 
 openEditOfferModal(offer: any) {
   this.mapService.resetMap(".update-map");
   this.updateOffer = offer;
-  this.offerForm.get('depart_date_start')!.setValue(offer.depart_date_start);
-  this.offerForm.get('arrival_date_start')!.setValue(offer.destination_date_start);
-  this.offerForm.get('depart_date_end')!.setValue(offer.depart_date_end);
-  this.offerForm.get('arrival_date_end')!.setValue(offer.destination_date_end);
-  this.offerForm.get('origin')!.setValue(offer.origin);
-  this.offerForm.get('destination')!.setValue(offer.destination);
-  this.offerForm.get('volume')!.setValue(offer.volume);
-  this.offerForm.get('prix')!.setValue(offer.prix);
+  
+    this.updateOffer = { ...offer };
+  
+    // patch every control at once
+    this.offerForm.patchValue({
+      type_offre:      offer.type_offre,
+      reference:       offer.reference,
+      depart_date_start:    offer.depart_date_start,
+      depart_date_end:      offer.depart_date_end,
+      arrival_date_start:   offer.destination_date_start,
+      arrival_date_end:     offer.destination_date_end,
+      origin:          offer.origin,
+      destination:     offer.destination,
+      volume:          offer.volume,
+      prix:            offer.prix,
+      depart_etage:    offer.depart_etage,
+      arrivee_etage:   offer.arrivee_etage,
+      depart_pres:     offer.depart_pres,
+      arrivee_pres:    offer.arrivee_pres,
+      commentaire:     offer.commentaire,
+      escalier_depart:     offer.escalier_depart,
+      ascenseur_depart:    offer.ascenseur_depart,
+      monte_meuble_depart: offer.monte_meuble_depart,
+      direct_depart:       offer.direct_depart,
+      escalier_arrivee:    offer.escalier_arrivee,
+      ascenseur_arrivee:   offer.ascenseur_arrivee,
+      monte_meuble_arrivee:offer.monte_meuble_arrivee,
+      direct_arrivee:      offer.direct_arrivee
+    });
+  
+  
+  
 
   if (!offer || !offer.route) {
     console.error("Offer not found or route is missing.");
@@ -720,6 +880,7 @@ closeUpdateOfferModal(){
   if (this.updateCloseButton) {
     this.updateCloseButton.nativeElement.click();
   }
+  this.offerForm.reset();
 }
 updateRange(type: string) {
   if (type === "volume") {
@@ -736,4 +897,18 @@ updateRange(type: string) {
 checkLength(c:string){
   return c.length ==0 || c.length == 2;
 }
+
+
+toggleView() {
+  this.isTableView = !this.isTableView;
+}
+
+  trackByFloor(_idx: number, floor: number): number {
+    return floor;
+  }
+
+
+  trackById(_idx: number, item: any) {
+    return item.id_offre;
+  }
 }

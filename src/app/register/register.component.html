@@ -1,53 +1,137 @@
-  <div class="register-area">
-      <div class="d-table">
-        <div class="d-table-cell">
-          <div class="register-form">
-            <h2>S'inscrire a notre plateform!</h2>
-    
-            <form (ngSubmit)="submitForm()" #registerForm="ngForm">
-              <div class="form-group">
-                <input type="text" class="form-control" name="name" placeholder="Nom" [(ngModel)]="formData.name" >
-                <span class="label-title"><i class='bx bx-user'></i></span>
-                <div *ngIf="formData.name == '' || formData.name ==' '" class="text-danger">Ce champs est obligatoire.</div>
+<div class="register-area">
+  <div class="d-table">
+    <div class="d-table-cell">
+      <div class="register-form">
+        <h2>S'inscrire à notre plateforme !</h2>
 
-                
-              </div>
-    
-              <div class="form-group">
-                <input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="formData.email" required (mouseout)="checkEmail()">
-                <span class="label-title"><i class='bx bx-envelope'></i></span>
-                <div *ngIf="formData.email == '' || formData.email ==' '" class="text-danger">Ce champs est obligatoire.</div>
-                <div *ngIf="emailExists" style="justify-self: left !important;" class="text-danger"><i class="bi bi-x-circle" style="color: red;margin-right:5px;"></i>Un utilisateur avec cet email existe déjà.</div>
-              </div>
-    
-              <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Mot de passe" [(ngModel)]="formData.password" required>
-                <span class="label-title"><i class='bx bx-lock'></i></span>
-                <div *ngIf="formData.password == '' || formData.password ==' '" class="text-danger">Ce champs est obligatoire.</div>
-              </div>
-              
-              <div class="form-group">
-                <input type="password" class="form-control" name="password2" placeholder="Confirmer mot de passe" [(ngModel)]="formData.password2" required>
-                <span class="label-title"><i class='bx bx-lock'></i></span>
-                <div *ngIf="formData.password !== formData.password2" class="text-danger">Les mots de passe ne correspondent pas.</div>
-              </div>
-    
-            <br>
-              <div class="form-group" >
-                <h6><i class="bx bxs-cloud-upload"></i> Télécharger votre KBIS :</h6><br>
-                <input type="file" accept="application/pdf" class="form-control" name="file" (change)="onFileChange($event)" required>
-              </div>
-    
-              <button type="submit" class="register-btn">S'inscrire</button>
-              <br><br><div class="d-flex justify-content-center" *ngIf="loading">
-                <div class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
+        <form (ngSubmit)="submitForm()" #registerForm="ngForm" novalidate>
+          <!-- Role Selection Tabs -->
+          <ul class="nav nav-tabs mb-3" style="justify-content: center; cursor:pointer">
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{active: formData.role === 'particulier'}" (click)="formData.role = 'particulier'">Particulier</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{active: formData.role === 'professionnel'}" (click)="formData.role = 'professionnel'">Professionnel</a>
+            </li>
+          </ul>
+
+          <!-- PART – PARTICULIER -->
+          <div *ngIf="formData.role === 'particulier'">
+            <div class="form-group position-relative">
+              <select class="form-control pl-5" name="civility" [(ngModel)]="formData.civility" required #civility="ngModel"
+                      [ngClass]="{'is-valid': civility.valid && civility.touched, 'is-invalid': civility.invalid && civility.touched}">
+                <option value="" disabled selected hidden>Civilité</option>
+                <option value="Monsieur">Monsieur</option>
+                <option value="Madame">Madame</option>
+                <option value="Autre">Autre</option>
+              </select>
+              <span class="label-title position-absolute"><i class="bx bx-user"></i></span>
+              <small *ngIf="civility.invalid && civility.touched" class="form-text text-danger">Ce champ est requis.</small>
             </div>
-              <p class="mb-0">Vous avez déjà un compte ? <a href="/login">Se connecter</a></p>
-            </form>
+
+            <div class="form-group">
+              <input type="text" class="form-control" name="lastName" placeholder="Nom" [(ngModel)]="formData.lastName" required #lastName="ngModel"
+                     [ngClass]="{'is-valid': lastName.valid && lastName.touched, 'is-invalid': lastName.invalid && lastName.touched}">
+              <span class="label-title"><i class="bx bx-user"></i></span>
+              <small *ngIf="lastName.invalid && lastName.touched" class="form-text text-danger">Ce champ est requis.</small>
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" name="firstName" placeholder="Prénom" [(ngModel)]="formData.firstName" required #firstName="ngModel"
+                     [ngClass]="{'is-valid': firstName.valid && firstName.touched, 'is-invalid': firstName.invalid && firstName.touched}">
+              <span class="label-title"><i class="bx bx-user"></i></span>
+              <small *ngIf="firstName.invalid && firstName.touched" class="form-text text-danger">Ce champ est requis.</small>
+            </div>
           </div>
-        </div>
+
+          <!-- PART – PROFESSIONNEL -->
+          <div *ngIf="formData.role === 'professionnel'">
+            <div class="form-group">
+              <input type="text" class="form-control" name="raison_sociale" placeholder="Raison sociale" [(ngModel)]="formData.raison_sociale" required #raison="ngModel"
+                     [ngClass]="{'is-valid': raison.valid && raison.touched, 'is-invalid': raison.invalid && raison.touched}">
+              <span class="label-title"><i class='bx bx-building'></i></span>
+              <small *ngIf="raison.invalid && raison.touched" class="form-text text-danger">Ce champ est requis.</small>
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" name="siret" placeholder="Numéro SIRET" [(ngModel)]="formData.siret" required #siret="ngModel"
+                     [ngClass]="{'is-valid': siret.valid && siret.touched, 'is-invalid': siret.invalid && siret.touched}">
+              <span class="label-title"><i class='bx bx-id-card'></i></span>
+              <small *ngIf="siret.invalid && siret.touched" class="form-text text-danger">Ce champ est requis.</small>
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" name="contact_name" placeholder="Nom du contact" [(ngModel)]="formData.contact_name" required #contactName="ngModel"
+                     [ngClass]="{'is-valid': contactName.valid && contactName.touched, 'is-invalid': contactName.invalid && contactName.touched}">
+              <span class="label-title"><i class="bx bx-user"></i></span>
+              <small *ngIf="contactName.invalid && contactName.touched" class="form-text text-danger">Ce champ est requis.</small>
+            </div>
+          </div>
+
+          <!-- COMMON FIELDS -->
+          <div class="form-group">
+            <input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="formData.email" (blur)="checkEmail()"
+                   required email #email="ngModel"
+                   [ngClass]="{'is-valid': email.valid && email.touched && !emailExists, 'is-invalid': email.invalid && email.touched || emailExists}">
+            <span class="label-title"><i class="bx bx-envelope"></i></span>
+            <small *ngIf="email.invalid && email.touched" class="form-text text-danger">Entrez un email valide.</small>
+            <small *ngIf="emailExists" class="form-text text-danger">Cet email est déjà utilisé.</small>
+          </div>
+
+          <div class="form-group">
+            <input type="tel"
+                   class="form-control"
+                   name="phone"
+                   placeholder="Téléphone (ex: 0612345678 ou +33612345678)"
+                   [(ngModel)]="formData.phone"
+                   required
+                  [pattern]="phonePattern"
+                   #phone="ngModel"
+                   [ngClass]="{
+                     'is-valid': phone.valid && phone.touched,
+                     'is-invalid': phone.invalid && phone.touched
+                   }">
+            <span class="label-title"><i class="bx bx-phone"></i></span>
+            <small *ngIf="phone.invalid && phone.touched" class="form-text text-danger">
+              Numéro de téléphone invalide (format: 0612345678 ou +33612345678).
+            </small>
+          </div>
+          
+          
+          <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Mot de passe"
+                   [(ngModel)]="formData.password" required minlength="6" #password="ngModel"
+                   [ngClass]="{'is-valid': password.valid && password.touched, 'is-invalid': password.invalid && password.touched}">
+            <span class="label-title"><i class="bx bx-lock"></i></span>
+            <small *ngIf="password.invalid && password.touched" class="form-text text-danger">Mot de passe requis (min. 6 caractères).</small>
+          </div>
+
+          <div class="form-group">
+            <input type="password" class="form-control" name="password2" placeholder="Confirmation du mot de passe"
+                   [(ngModel)]="formData.password2" required #password2="ngModel"
+                   [ngClass]="{'is-valid': formData.password2 === formData.password && password2.touched, 'is-invalid': formData.password2 !== formData.password && password2.touched}">
+            <span class="label-title"><i class="bx bx-lock"></i></span>
+            <small *ngIf="formData.password2 !== formData.password && password2.touched" class="form-text text-danger">
+              Les mots de passe ne correspondent pas.
+            </small>
+          </div>
+
+          <div class="form-group" *ngIf="formData.role === 'professionnel'">
+            <label>Pièce jointe (KBIS - PDF uniquement)</label>
+            <input type="file" accept="application/pdf" class="form-control" name="file" (change)="onFileChange($event)">
+            <span class="label-title"><i class="bx bx-file" style="top:35px;"></i></span>
+          </div>
+
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="formData.acceptTerms" name="acceptTerms" required #terms="ngModel">
+            <label class="form-check-label">J'accepte les conditions générales et la politique de confidentialité</label>
+            <small *ngIf="terms.invalid && terms.touched" class="form-text text-danger">Vous devez accepter les conditions.</small>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" [disabled]="registerForm.invalid || emailExists ">S'inscrire</button>
+          <p class="mb-0">Vous avez déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+        </form>
       </div>
     </div>
-    
+  </div>
+</div>

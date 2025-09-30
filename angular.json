@@ -69,9 +69,8 @@
                "src/assets/homepage/vendor/aos/aos.js",
                "src/assets/homepage/vendor/php-email-form/validate.js",
             
-               "src/assets/homepage/js/main.js"
-
-              
+               "src/assets/homepage/js/main.js",
+               "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.js"
             ]
           },
           "configurations": {
