@@ -1,4 +1,4 @@
-<h2>🌟 Assistline Frontend</h2>
+🌟 Assistline Frontend
 
 Angular web app providing a responsive, modern interface for Assistline with real-time chat, PayPal payments, and interactive maps.
 
